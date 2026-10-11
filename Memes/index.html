@@ -1,0 +1,228 @@
+
+<html>
+<head>
+    <title>Memes</title>
+    <link rel="stylesheet" href="/CSS/style_Memes.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+</head>
+<body>
+    
+    <audio id="myAudio"> <!-- Audio element for playing music -- At the Top to load music quick -->
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <h1>Velg noe &aring; lytte til mens du glatter ut hjernen </h1>
+    <form action="../../">
+        <button type="submit" class="button-4" style="vertical-align:middle">Jeg vil tilbake</button>
+    </form>
+    <nav> <!-- Hvorfor bruker jeg nav? -->
+        <ul>
+            <li>
+                <iframe 
+                    style="border-radius:12px;" 
+                    src="https://open.spotify.com/embed/playlist/37i9dQZF1DWY0ymO6q3FGL?utm_source=generator"
+                    width="110%"
+                    max-width="400px"
+                    height="352" 
+                    frameBorder="0" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    >
+                </iframe>
+            </li>
+            <li>
+                <iframe 
+                    style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/playlist/4SoXeK7y02CR1i7L3a3cJ8?utm_source=generator" 
+                    width="110%" 
+                    height="352" 
+                    frameBorder="0" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    >
+                </iframe> 
+            </li>
+            <li>
+                <iframe 
+                    style="border-radius:12px" 
+                    src="https://open.spotify.com/embed/episode/209PX4I9xjdRRLdPv3vycV?utm_source=generator" 
+                    width="100%" 
+                    height="352" 
+                    frameBorder="0" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy"
+                    >
+                </iframe>
+            </li>
+            <li>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <p style="font-family: 'Times New Roman', Times, serif;">
+                        Du kan faktisk hoppe over reklamen.
+                    </p>
+                    <div style="display: flex; gap: 20px; flex-direction: row;">
+                        <p>H&oslash;r p&aring; dit eget ansvar. Vent til siden har lastet (2 sek) f&oslash;r du spiller.</p>
+                        <img src="/Bilder/NoSound.svg" onclick="togglePlay()" id="toggleplayButton" style="width: 50px; height: 50px;">
+                        <img src="/Bilder/SkipSong.svg" onclick="nextSong()" id="nextSong" style="width: 50px; height: 50px;">
+                    </div>
+                    <!--<p id="statusText" style="color: black;">Audio is paused.</p> Blir lagt til i console.log (se script lenger ned)-->
+                </div>
+            </li>
+        </ul>
+    </nav>
+    <h2> Her har du noen av mine beste memes fra hovedsaklig MMmV (har ikke lagt inn for H25 og V26 enda; beklager forsinkelsen)</h2> <!--  Nyere semester kommer lenger opp -->
+    <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+    <nav> <!-- Hvorfor bruker jeg nav? -->
+        <h2> &sect;&sect;3. V&aring;r 2026 / 4. Semester</h2> <!-- a, ø, æ: &aring;, &oslash; og &aelig;-->
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/websjef1uke.png" style="border-color: rgb(229, 43, 145);"> </li>            
+        </ul>
+    </nav>
+    <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+    <nav> <!-- Hvorfor bruker jeg nav? -->
+        <h2> &sect;&sect;2. H&oslash;st 2025 / 3. Semester</h2> <!-- a, ø, æ: &aring;, &oslash; og &aelig;-->
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/Skjermbilde 2025-06-29 234321.png" style="border-color: rgb(0, 255, 81);"> </li>
+            <li> <img src="/Bilder/Memes/dough.jpg" style="border-color: rgb(43, 191, 229);"> </li>
+            <li> <img src="/Bilder/Memes/fightFor1place.jpg" style="border-color: rgb(56, 29, 235);"> </li>
+            <li> <img src="/Bilder/Memes/folkesideMeme.jpg" style="border-color: rgb(209, 23, 222);"> </li>
+            
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <video autoplay muted loop id="myVideo"><source src="/Videoer/ahzemj.mp4" type="video/mp4"></video> </li>
+            <li> <img src="/Bilder/Memes/AndreasTheFinancier.jpg" style="border-color: orange;"> </li>
+            <li> <img src="" alt="Jeg er treig ok? vent t&aring;lmodigt"> </li>
+
+        </ul>
+    </nav>
+    <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+    <nav> 
+        <h2> &sect;&sect;1. V&aring;r 2025 / 2. Semester</h2> <!-- a, ø, æ: &aring;, &oslash; og &aelig;-->
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/Skjermbilde 2025-01-29 163414.png" style="border-color: rgba(205, 3, 3, 0.949);"> </li>
+            <li> <img src="/Bilder/Memes/Skjermbilde 2025-01-29 172008.png"> </li>
+            <li> <img src="/Bilder/Memes/Skjermbilde 2025-01-29 173223.png" style="border-color: yellow; object-fit: cover;"> </li>
+            <li> <img src="/Bilder/Memes/ginyu.jpg" style="border-color: green;"> </li>
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/Skjermbilde 2025-04-26 172643.png" style="border-color:darkturquoise; object-fit: cover;"> </li>
+            <li> <img src="/Bilder/Memes/markonini_jetvicini.png" style="border-color: purple;"> </li>
+            <li> <img src="/Bilder/Memes/benjamin_phelps.png" style="border-color: green;"> </li>
+            <li> <img src="/Bilder/Memes/its_all_styret_arkivarene.png" style="border-color: darkorange;"> </li>
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/iq_chart_new.jpg" style="border-color:red"> </li>
+            <li> <img src="/Bilder/Memes/tina_polsevann.jpg" style="border-color: blue;"> </li>
+            <li> <img src="/Bilder/Memes/maya_flash.png" style="border-color: black;"> </li>
+            <li> <img src="/Bilder/Memes/queue_pols.png" style="border-color: olive;"> </li>
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/deniz_save.png" style="border-color: cornflowerblue;"> </li>
+            <li> <img src="/Bilder/Memes/lanekasse_vinlotteri.png" style="border-color: purple;"> </li>
+            <li> <img src="/Bilder/Memes/prokastinering_DOG.png" style="border-color: brown;"> </li>
+            <li> <img src="/Bilder/Memes/twin_tower_vin.png" style="border-color: silver;"> </li>
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/ina_banke.png" style="border-color:black; object-fit: cover;"> </li>
+            <li> <img src="/Bilder/Memes/bjor_brian.png" style="border-color:blue; object-fit: cover;"></li>
+            <li> <img src="/Bilder/Memes/marko_evolution.png" style="border-color:green; object-fit: cover;"></li>
+            <li> <img src="/Bilder/Memes/DVD_bouncerQR.png" style="border-color:gold; object-fit: cover;"></li>
+        </ul>
+        <ul class="meme-wrapper">
+            <li> <img src="/Bilder/Memes/rigged_yatzy.jpg" style="border-color: cornflowerblue;"> </li>
+            <li> <img src="/Bilder/Memes/yatzy_no-mercy.jpg" style="border-color: rgb(216, 23, 220); max-height: 500px;"> </li>
+            <li> <img src="/Bilder/Memes/old_people_at_slot_machine.jpg" style="border-color: rgb(148, 237, 100);"> </li>
+            <li> <img src="/Bilder/Memes/9vvnkd.jpg" style="border-color: rgb(237, 207, 100); max-width: 500px;"> </li>
+        </ul>
+    </nav>
+    <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+
+    <script>
+        document.querySelectorAll('.meme-wrapper img').forEach(img => {
+            img.addEventListener('click', () => {
+                img.classList.toggle('animate');
+            });
+        });
+
+        const audio = document.getElementById("myAudio");
+        const audioSource = document.getElementById("audioSource");
+
+        const playlist = [
+            "/Audio/gay-orgy.mp3",
+            "/Audio/Despacito 2 (Parody Video) [W3GrSMYbkBE].mp3",
+            "/Audio/averagejonasv2.mp3",
+            //"/Audio/mhanightcoremashup.mp3"
+        ];
+
+        let currentSong = Math.floor(Math.random() * playlist.length); // Start med en tilfeldig sang
+
+        function playCurrentSong() {
+            audioSource.src = playlist[currentSong]; // Need this before audio.load() is used
+            audio.load();
+            audio.play();
+        }
+
+        function playAudio() {
+        if (audio.paused) {
+            audio.play();
+        }
+        }
+
+        function pauseAudio() {
+            audio.pause();
+        }
+
+        function updateStatus() {
+            console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+            if (audio.paused) {
+                document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+            } else {
+                document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+                console.log("Playing song: " + playlist[currentSong]);
+            }
+        }
+
+        // Spill neste sang automatisk
+        audio.onended = function () {
+            currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+            playCurrentSong();
+        };
+
+         // Toggle play/pause for the audio element when the image is clicked
+        function togglePlay() {
+            // Hvis audio er på, så pause
+            if (audio.paused) {
+                playAudio();
+                document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+            } else { // Hvis audio er av, så spill
+                pauseAudio();
+                document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+            }
+        }
+
+        // Bytt til neste sang når knappen klikkes
+        function nextSong() {
+            currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+            playCurrentSong();
+            document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+        }
+
+        audio.onplay = updateStatus;
+        audio.onpause = updateStatus;
+
+        // Auto-start musikk ved lasting av siden
+        
+        window.onload = function () {
+            audioSource.src = playlist[currentSong];
+            audio.load(); // Instead of autostarting music, it loads music, ready to be played
+        }; 
+    </script> 
+</body>
+</html>

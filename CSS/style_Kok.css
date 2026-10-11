@@ -1,0 +1,149 @@
+body { font-family: Arial, sans-serif; margin: 20px; display: flex; 
+    background-image: url('/Bilder/Dark_wood.jpg'); 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 110%;
+}
+
+.button-4 {
+            width: 200px;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            background-color: #5a3a1b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+.button-4:hover {
+    background-color: #3e2711;  /* Darker brown background on hover */
+}
+
+.button-55 {
+    align-self: center;
+    background-color: #fff;
+    background-image: none;
+    background-position: 0 90%;
+    background-repeat: repeat no-repeat;
+    background-size: 4px 3px;
+    border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+    box-sizing: border-box;
+    color: #41403e;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Neucha, sans-serif;
+    font-size: 1rem;
+    line-height: 23px;
+    outline: none;
+    padding: .75rem;
+    text-decoration: none;
+    transition: all 235ms ease-in-out;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+  
+.button-55:hover {
+    box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+    transform: translate3d(0, 2px, 0);
+}
+  
+.button-55:focus {
+    box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+}
+
+
+a {
+    text-decoration: none;
+    color: #1e4774;
+    font-weight: bold; 
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #21b9e0;
+    /*text-shadow: 2px 2px 10px #5feecd;
+    filter: dropshadow(color=#000000, offx=10, offy=10);
+    */
+}
+
+.button-48 {
+    height: 300px;
+    width: 250px;
+    background-color: #FFFFFF;
+    padding: 10px; /* Ensures 10px space around content */
+    border-width: 0;
+    box-sizing: border-box;
+    color: #000000;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Clarkson, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1em;
+    margin: 0;
+    opacity: 1;
+    outline: 0;
+    position: relative;
+    text-align: center;
+}
+.button-48:hover {
+    background: radial-gradient(ellipse farthest-corner at right bottom, #FEDB37 0%, #FDB931 8%, #9f7928 30%, #8A6E2F 40%, transparent 80%),
+                radial-gradient(ellipse farthest-corner at left top, #FFFFFF 0%, #FFFFAC 8%, #D1B464 25%, #5d4a1f 62.5%, #5d4a1f 100%);
+}
+
+.button-48:hover img {
+    transform: scale(1.4);
+    transition: transform 0.3s ease;
+}
+
+.image-wrapper {
+    width: calc(100% - 20px); /* Subtract 10px from left and right */
+    height: calc((100% * 3 / 4) - 10px); /* 3/4 of button height minus top padding */
+    overflow: hidden;
+    position: absolute;
+    top: 10px; /* Keep 10px from the top edge */
+    left: 10px; /* Keep 10px from the left edge */
+    right: 10px; /* Keep 10px from the right edge */
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crops and scales the image to fill the container */
+    border-radius: 8px; /* Optional */
+}
+
+.text {
+    position: absolute;
+    bottom: 35px;
+    left: 10px;
+    right: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+button div p {
+    position: absolute;
+    bottom: 1px;
+    left: 10px;
+    right: 10px;
+    font-size: 8px;
+    color: #333;
+    margin: 0px !important;
+}

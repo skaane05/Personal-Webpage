@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Yatzy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/CSS/style_Yatzy_arkivert.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script> <!-- For CryptoJs-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+</head>
+<body>
+    
+    <ul>
+        <div class="oppgaver-ramme">
+            <h2>Kategorier</h2>
+            <table id="score-table">
+                <tr><th>Kategorier</th><th>Poeng</th></tr>
+                <tr><td>Enere</td><td id="score-ones">-</td></tr>
+                <tr><td>Toere</td><td id="score-twos">-</td></tr>
+                <tr><td>Treere</td><td id="score-threes">-</td></tr>
+                <tr><td>Firere</td><td id="score-fours">-</td></tr>
+                <tr><td>Femere</td><td id="score-fives">-</td></tr>
+                <tr><td>Seksere</td><td id="score-sixes">-</td></tr>
+                <tr><td><b>Sum</b></td><td id="score-total1">-</td></tr>
+                <tr><td><b>Bonus</b></td><td id="bonus">-</td></tr>
+                <tr><td>1 Par</td><td id="score-onePair">-</td></tr>
+                <tr><td>2 Par</td><td id="score-twoPair">-</td></tr>
+                <tr><td>3 Like</td><td id="score-threeOfAKind">-</td></tr>
+                <tr><td>4 like</td><td id="score-fourOfAKind">-</td></tr>
+                <tr><td>Liten Straight</td><td id="score-smallStraight">-</td></tr>
+                <tr><td>Stor Straight</td><td id="score-largeStraight">-</td></tr>
+                <tr><td>Hus</td><td id="score-fullHouse">-</td></tr>
+                <tr><td>Sjanse</td><td id="score-chance">-</td></tr>
+                <tr><td>Yatzy</td><td id="score-yahtzee">-</td></tr>
+                <tr><td><b>Poengsum</b></td><td id="score-total2">-</td></tr>
+            </table>
+        </div>
+        
+        <ul class="right-align"> <!-- plasserer ledertavlene helt til høyre-->
+            <div class="ledertavle-ramme" style="background: white; margin-right: 30px;">
+                <h2>Personlige Beste</h2>
+                <div id="leaderboard"></div>
+                <button id="lagre-poeng" type="button">Lagre dine beste prestasjoner!</button>
+            </div>
+
+            <div class="ledertavle-ramme">
+                <h2 style="text-decoration: underline;">Ledertavle</h2>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Navn</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--
+                        <tr><td>1.</td><td>Alma</td><td>259</td></tr>
+                        <tr><td>2.</td><td>Mighty D</td><td>239</td></tr>
+                        <tr><td>3.</td><td>Daniboi</td><td>223</td></tr>
+                        <tr><td>4.</td><td>Wacktor</td><td>219</td></tr>
+                        <tr><td>5.</td><td>Andreas</td><td>194</td></tr>
+                        <tr><td>6.</td><td>Jørgen</td><td>173</td></tr>
+                        <tr><td>7.</td><td>John Olai</td><td>168</td></tr>
+                        <tr><td>8.</td><td>Skaane</td><td>166</td></tr>
+                        <tr><td>9.</td><td>Vetle</td><td>161</td></tr>
+                        <tr><td>10.</td><td>Matilde</td><td>158</td></tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
+        </ul>
+    </ul>   
+    
+    <div style="position: absolute; z-index: 2; top: 3%; right: 65%;">
+        <div>
+            <a href="#" class="button" onclick="visRegler(event)">Hvordan Spille?</a>
+            <div id="regelboks" style="display: none; position: absolute; left: 150px; margin: 70px; transform: translateX(-50%); margin-left: 10px;">
+                <div class="rules-box">
+                    <p class="rule-paragraph">
+                        Dette er <strong>TVUNGEN YATZY</strong>. Du starter spillet ved å trykke på "Rull Terninger". 
+                        Du har tre kast per kategori. Hvilken kategori du er på ser du til venstre, der den øverste uten noen verdi (-) er den du er på. Jeg forventer at du husker
+                        hvilket kast du er på.
+                        For å beholde verdien på terningen(e), simpelt trykk på de(n)! Da vil de få <strong style="color: red;">røde rammer</strong> og vil være låst på den verdien. Trykk på dem igjen
+                        og de vil bli u-låst!
+                        Etter tredjekast vil alle terningene <strong style="color: blue;">låse seg</strong>, og poengsummen for kategorien telles. Deretter <strong>bare fortsett å trykk "Rull Terninger"</strong>, og
+                        neste kategori begynner!
+                        Når du er på siste kast, vil du få en pop-up melding. Lukk de(n) så vil du se poengskåren din til venstre. Følg gjerne instruksene til dem, 
+                        om de ber deg om noe. 
+                    </p>
+                    <p class="rule-paragraph">
+                        <strong><u>"Nullstill spill":</u></strong> Denne fjerner alle poenger fra alle kategorier. Rett og slett restarter spillet. Trykk på denne om du er misfornøyd med runden!
+                    </p>
+                    <p class="rule-paragraph">
+                        <strong><u>"Lagre dine beste prestasjoner!"</u></strong>: Når du trykker på denne
+                        vil det dukke opp en innsending, der du kan skrive navnet ditt. Det spiller ingen rolle hva du skriver der, så lenge det ikke er tomt. <strong>Dette er navnet som vil dukke opp på ledertavlene.</strong> 
+                        Dine personlige beste oppdateres automatisk, mens "ledertavlen" oppdateres foreløpig manuelt (av meg).
+                        Noe hengt seg opp? Hard-refresh-nettsiden med: <strong>CTRL+SHIFT+R</strong>. (NB! Dette vil nullstille spillet)
+                    </p>
+                    <p class="rule-paragraph">
+                        <strong><u>Regler:</u></strong> litt rundt omkring <a style="color: blue;" href="https://en.wikipedia.org/wiki/Yahtzee">her</a>
+                    </p>
+                    <p class="rule-paragraph">
+                        <strong><u>Hurtigtaster:</u></strong> N & A = Nullstill spill, K & D = Rull Terninger, 1 - 5 = Terning # 1 - 5
+                    </p> 
+                    <button onclick="skjulRegler()">Skjul</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="right" style="
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 15%; /* Positions it close to the bottom */
+    ">
+        <div class="dice-button-container">
+            <div class="dice-container" id="dice-container"></div> 
+            <div class="button-container">
+                <div class="pc-buttons"> <!-- For pc-vises knapper-->
+                    <button class="roll-button">Kast Terningene (K/D)</button> <!-- Har vanligvis id="roll-button", men siden det er to knapper med samme id blir det class, se script.js-->
+                    <button class="reset-button">Nullstill spill (N/A)</button>
+                </div>
+                <div class="non-pc-buttons"> <!-- For alt ikke pc-vises bilder som knapper istedenfor små knapp med tekst-->
+                    <img src="/Bilder/Fri_Yatzy/ThrowDice.svg" class="roll-button" style="width: 50px; height: 50px;">
+                    <img src="/Bilder/Nullstil.svg" class="reset-button" style="width: 50px; height: 50px; transition: transform 0.5s;" onclick="this.style.transform='rotate(360deg)'; setTimeout(() => { this.style.transform=''; }, 500);">
+                </div>
+                <audio id="myAudio">
+                    <source id="audioSource" src="" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div style="display: flex; gap: 20px; flex-direction: row;">
+                    <img src="/Bilder/PlayingSong.svg" onclick="togglePlay()" id="toggleplayButton" style="width: 50px; height: 50px;">
+                    <img src="/Bilder/SkipSong.svg" onclick="nextSong()" id="nextSong" style="width: 50px; height: 50px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <script src="/Javascript/script_Yatzy_arkivert.js"></script> <!-- Av en eller annen ass grunn må disse stå etter alt i body. Vanligvis skal de i header. men IDK, dette funker.-->
+    <script>
+        let startTime = Date.now();
+    </script>
+    <script>
+        /*LES HER --- Alt angående selve spillet yatzy, som reset-button er under script.js, google gtag om reset-button er under*/
+        const audio = document.getElementById("myAudio");
+        const audioSource = document.getElementById("audioSource");
+
+        const playlist = [
+            "/Audio/Lost_in_Paradise.mp3",
+            "/Audio/blindside-audio.mp3",
+            "/Audio/last-friday-night-tgif-lyrics.mp3",
+            "/Audio/me-and-my-monkey-robbie-williams.mp3",
+        ];
+
+        let currentSong = Math.floor(Math.random() * playlist.length);
+
+        function playCurrentSong() {
+        audioSource.src = playlist[currentSong];
+        audio.load();
+        audio.play();
+        }
+
+        function playAudio() {
+        if (audio.paused) {
+            audio.play();
+        }
+        }
+
+        function pauseAudio() {
+            audio.pause();
+        }
+
+        function updateStatus() {
+            console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+            if (audio.paused) {
+                document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+            } else {
+                document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+            }
+        }
+
+        // Spill neste sang automatisk
+        audio.onended = function () {
+        currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+        playCurrentSong();
+        };
+
+         // Toggle play/pause for the audio element when the image is clicked
+        function togglePlay() {
+            // Hvis audio er på, så pause
+            if (audio.paused) {
+                playAudio();
+                document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+            } else { // Hvis audio er av, så spill
+                pauseAudio();
+                document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+            }
+        }
+
+        // Bytt til neste sang når knappen klikkes
+        function nextSong() {
+            currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+            playCurrentSong();
+            document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+            console.log("Next song played: " + playlist[currentSong]);
+        }
+
+        audio.onplay = updateStatus;
+        audio.onpause = updateStatus;
+
+        // Auto-start musikk ved lasting av siden
+        window.onload = function () {
+        playCurrentSong();
+        };
+    </script>
+
+    <script>
+        window.addEventListener("beforeunload", () => {
+        let endTime = Date.now();
+        let durationInSeconds = Math.round((endTime - startTime) / 1000);
+
+        gtag('event', 'time_on_page', {
+            'event_category': 'engagement',
+            'event_label': 'Yatzy',
+            'value': durationInSeconds
+        });
+        });
+        
+        document.querySelectorAll(".roll-button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                gtag('event', 'rull_trykket', {
+                'event_category': 'interaksjon',
+                'event_label': 'Yatzy',
+                'value': 1
+                });
+                // evt. også: rollDice(); eller hva funksjonen heter
+            });
+        });
+
+        document.querySelectorAll(".reset-button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                gtag('event', 'nullstill_trykket', {
+                'event_category': 'interaksjon',
+                'event_label': 'Yatzy',
+                'value': 1
+                });
+                // evt. også: resetGame(); hvis du har en slik funksjon
+            });
+        });
+
+        document.getElementById("lagre-poeng")?.addEventListener("click", () => {
+            gtag('event', 'savedscores', {
+                'event_category': 'interaksjon',
+                'event_label': 'Yatzy',
+                'value': 1
+            });
+        });
+    </script>
+</body>
+</html>

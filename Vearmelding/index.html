@@ -1,0 +1,724 @@
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Værmelding</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    
+    <style>
+    #board{
+        width:420px;
+        background:#111;
+        color:white;
+        font-family:Arial;
+        padding:10px;
+    }
+
+    .row{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:8px;
+        border-bottom:1px solid #333;
+    }
+
+    .line{
+        background: limegreen;
+        color: white;
+        font-weight: bold;
+        padding: 4px 5px;
+        border-radius: 4px;
+        margin-right: 5px;
+        min-width: 35px;
+        text-align: center;
+    }
+
+    .dest{
+        flex: 1;
+        margin: 10px;
+    }
+
+    .time{
+        font-weight: bold;
+    }
+
+    .arrival{
+        font-weight: bold;
+        margin-left: 10px; 
+    }
+    /*div div div div {
+        margin: 15 px;
+    }*/
+
+    /* CSS */
+    .button-19 {
+        appearance: button;
+        background-color: #1899D6;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        box-sizing: border-box;
+        color: #FFFFFF;
+        cursor: pointer;
+        display: inline-block;
+        font-family: din-round,sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        line-height: 20px;
+        margin: 0;
+        outline: none;
+        overflow: visible;
+        padding: 13px 16px;
+        text-align: center;
+        text-transform: uppercase;
+        touch-action: manipulation;
+        transform: translateZ(0);
+        transition: filter .2s;
+        user-select: none;
+        -webkit-user-select: none;
+        vertical-align: middle;
+        white-space: nowrap;
+        width: 100%;
+        max-width: min-content;
+    }
+
+    .button-19:after {
+        background-clip: padding-box;
+        background-color: #1CB0F6;
+        border: solid transparent;
+        border-radius: 16px;
+        border-width: 0 0 4px;
+        bottom: -4px;
+        content: "";
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: -1;
+    }
+
+    .button-19,
+    .button-19:focus {
+        user-select: auto;
+    }
+
+    .button-19:hover:not(:disabled) {
+        filter: brightness(1.1);
+        -webkit-filter: brightness(1.1);
+    }
+
+    .button-19:disabled {
+        cursor: auto;
+    }
+
+    .button-19:active {
+        border-width: 4px 0 0;
+        background: none;
+    }
+    
+    .buss-table {
+        border-radius: 10px;
+        border-color: maroon;
+        /*background-color: lightgrey;*/
+        margin: 5px;
+        padding: 10px;
+    }
+    .weather-container {
+        border-radius: 10px;
+        border-color: maroon;
+        background-color: lightblue;
+        color: #111;
+        margin: 5px;
+        padding: 10px;
+        display: flex; 
+        align-items: center;
+    }
+    body {
+        background-color: #111;
+        color: white;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
+    h3 {
+        margin: 0px; 
+        font-size: 15px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+    .sentrumretning { /*Kopi av buss-table for å etterligne avstand på bussene*/
+        margin: 5px;
+    }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: row;">
+        <div style="display: flex; flex-direction: column;">
+            <h1 id="Klokka" style="font-size:xx-large; font-weight:bold; margin: 5px; border-bottom: 1px solid #333; border-color: aliceblue;" ></h1> 
+            <div style="display: flex; flex-direction: row;">
+                <div style="display: flex; flex-direction: row; margin-right: 5px ;width: 35%;">
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="temp"></div> <!-- icon!! -->
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: row; width: 65%;">
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="kalender"></div> <!-- icon!! -->
+                    </div>
+            </div>
+            </div>
+
+        </div>
+        <div>
+            <div style="display: flex; flex-direction: column;"> 
+                <div style="display: flex; flex-direction: row;">
+                    <div class="sentrumretning" style="display: flex; flex-direction: column;"> 
+                        <h2>Fra sentrum </h2>
+                    </div>
+                    <div class="sentrumretning" style="display: flex; flex-direction: column;"> 
+                        <h2>Mot sentrum</h2>
+                    </div>
+                </div>
+                <h3 id="gloshaugenn">Gløshaugen</h3>
+                <div style="display: flex; flex-direction: row;">
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="GLOS_FS" class="buss-table"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="GLOS_MS" class="buss-table"></div>
+                    </div>
+                </div>
+                <!--
+                <h3>Høiskoleringen</h3>
+                <div style="display: flex; flex-direction: row;">
+                    <div style="display: flex; flex-direction: column;">
+                        <div id="HSR_FS" class="buss-table"></div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="HSR_MS" class="buss-table"></div>
+                    </div>
+                </div>
+                -->
+
+                <h3>Hesthagen</h3>
+                <div style="display: flex; flex-direction: row;">
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="HH_FS" class="buss-table"></div>
+                    </div>
+                    <div style="display: flex; flex-direction: column;"> 
+                        <div id="HH_MS" class="buss-table"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="memecarusel" style="width: 20%; margin: 5px; padding-left: 20px;">
+            <!-- Bildet som skal vises i karusellen -->
+            <h2>Memes</h2>
+            
+            <img id="carouselImage" src="" alt="Meme" style="max-width: 100%; height: auto;">
+            <p style="position: absolute; bottom: 5px; right: 10px;">Memes til nestleder@hc.ntnu.no</p>
+        </div>
+    </div>
+
+
+    <script>
+
+    // Finner NSR:Quay:XXXX på; https://stoppested.entur.org/?stopPlaceId=NSR:StopPlace:44085
+    const GLOSHAUGEN_MS = "NSR:Quay:75708";
+    const GLOSHAUGEN_FS = "NSR:Quay:75707";
+    const HESTEHAGEN_MS = "NSR:Quay:71204"; // Mot sentrum
+    const HESTEHAGEN_FS = "NSR:Quay:102719"; // Fra sentrum
+    const HOISKOLERINGEN_MS = "NSR:Quay:71939";
+    const HOISKOLERINGEN_FS = "NSR:Quay:71940";
+    //const MOHOLT_MS = "NSR:Quay:73260";
+    //const MOHOLT_FS = "NSR:Quay:73261";
+
+    async function loadBoard(div_ID, Busstop_ID) {
+        try {
+            const res = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "ET-Client-Name": "my-atb-board"
+                },
+                body: JSON.stringify({
+                    query: `
+                    {
+                        quay(id: "${Busstop_ID}") {
+                            estimatedCalls(numberOfDepartures: 5) {
+                                expectedDepartureTime
+                                destinationDisplay { frontText }
+                                serviceJourney {
+                                    line { publicCode }
+                                }
+                            }
+                        }
+                    }
+                    `
+                })
+            });
+
+            const json = await res.json();
+            const board = document.getElementById(div_ID);
+            if (!board) return; // Sikrer at vi ikke krasjer om div-en mangler
+            
+            board.innerHTML = "";
+            const departures = json.data.quay.estimatedCalls;
+
+            departures.forEach(bus => {
+                const departure = new Date(bus.expectedDepartureTime);
+                const now = new Date();
+                const minutes = Math.round((departure - now) / 60000);
+
+                const arrivalTime = departure.toLocaleTimeString("no-NO", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
+                const row = document.createElement("div");
+                row.className = "row";
+                /*
+                row.innerHTML = `
+                <div class="line">${bus.serviceJourney.line.publicCode}</div>
+                <div class="dest">${bus.destinationDisplay.frontText}</div>
+                <div class="time">${minutes <= 0 ? "NÅ" : minutes + " min"}</div>
+                <div class="arrival">${arrivalTime}</div>
+                `;
+                */
+                row.innerHTML = `
+                <div class="line">${bus.serviceJourney.line.publicCode}</div>
+                <div class="time">${minutes <= 0 ? "NÅ" : minutes + " min"}</div>
+                `;
+
+                board.appendChild(row);
+            });
+        } catch (error) {
+            console.error(`Feil ved lasting av tavle ${div_ID}:`, error);
+        }
+    }
+
+    function getTime(tid) { //litt cursed fordi kalender, værmleding og busstabell bruker alle denne, men henter ulik tid.
+        
+        const now = new Date();
+       
+        if (tid !== undefined) {
+            now.setHours(now.getHours() + tid);
+        }
+        
+        const time = now.toLocaleTimeString("no-NO", {
+            weekday: "long",
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        
+        const ukeDag = now.toLocaleDateString("no-NO", { weekday:"long"});
+        const klokkeslett = now.toLocaleTimeString("no-NO", { hour: "2-digit", minute: "2-digit" });
+       
+        // 'long' betyr hele navnet ("søndag"), 'short' gir tre bokstaver ("søn.")
+       
+
+        return { // Return brukes for værmeldingen
+            klokkeslett: klokkeslett,
+            dag: ukeDag,
+            tid: time,
+        }; 
+    }
+
+
+    function hentTallKode(symbolCode) {
+        // Liste over de vanligste oversettelsene fra MET Norge
+        const oversettelser = {
+            "clearsky_day": "01d",
+            "clearsky_night": "01n",
+            "fair_day": "02d",
+            "fair_night": "02n",
+            "partlycloudy_day": "03d",
+            "partlycloudy_night": "03n",
+            "cloudy": "04",
+            "rainshowers_day": "05d",
+            "rainshowers_night": "05n",
+            "rain": "09",
+            "heavyrain": "10",
+            "snow": "13",
+            "snowshowers_day": "14d",
+            "snowshowers_night": "14n"
+            // Legg til flere fra Yr om du merker at noen mangler
+        };
+        
+        const iconUrl = oversettelser[symbolCode] || "04";
+        // Returnerer koden (f.eks "03n"), eller standarden "04" (skyet) hvis den ikke finnes i listen
+
+         //currentForecast... henter verdien "04", fordi bildet til "cloudy" heter 04.svg. Så her er en converter (bildene ligger offentlig på den linken gitt)
+         //henter icon fra https://nrkno.github.io/yr-weather-symbols/) 
+        return `https://nrkno.github.io/yr-weather-symbols/symbols/lightmode/${iconUrl}.svg`;
+    }
+
+    async function getWeatherForecast(div_ID) { //https://api.met.no/
+        console.log("Værmelding hentes")
+        const weatherDiv = document.getElementById(div_ID);
+
+        const nu = await getWeatherForecastFuture(0)
+        const totimee = await getWeatherForecastFuture(2)
+        const sextime = await getWeatherForecastFuture(6)
+        const imrg = await getWeatherForecastFuture(24) 
+        const overimrg = await getWeatherForecastFuture(48)
+        const timer = [nu, totimee, sextime, imrg, overimrg]
+        const dagidag = nu[6]
+
+        console.warn("Hallo",timer[1])
+        
+        if (weatherDiv) {
+            weatherDiv.innerHTML = ""; // Tømmer boksen før vi starter loopen
+            
+            for (let i = 0; i < timer.length; i++) {
+                // += gjør at vi legger til et nytt kort uten å slette det forrige
+                weatherDiv.innerHTML += `
+                    <div class="weather-container" style="margin-bottom: 10px;">
+                        <img src="${timer[i][4]}" alt="${timer[i][1]}" style="width: 45px; height: 45px;">
+                        <div>
+                            <div style="font-size: 22px; font-weight: bold; line-height: 1;">${timer[i][0] !== undefined ? Math.round(timer[i][0]) + "°C" : "--°C"}</div>
+                            <div style="font-size: 12px; margin-top: 4px; opacity: 0.8;">${timer[i][2] + " - "} ${timer[i][3] + " mm"}</div>
+                            <div style="font-size: 12px; margin-top: 4px; opacity: 0.8;"><b>${timer[i][6] === dagidag ? " " : timer[i][6]} ${timer[i][5]}</b></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    };
+    
+
+    async function getWeatherForecastFuture(timerfranu) { //NB! HVER TIME  har en "neste 1 timer", "neste 6 timer" og "neste 12 timer" varsel. 
+        const headers = {
+            "User-Agent": "MinWeatherBoardApp/1.0 (andhrska@stud.ntnu.no)"
+        };
+
+        try {
+            const res = await fetch("https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=63.4305&lon=10.3951", { //** ÅPNE denne urlen og huk av pen formatering for å se hva du kan hente av data.
+                method: "GET",
+                headers: headers
+            });
+
+            //Neste time og nå slås sammen
+
+            /*
+            Instant: 
+                - Lufttemp.
+
+            Neste time: 
+                - symbol (ig cloudy)
+                - regnmengde (range)
+                - sansynlighet for regn
+
+            neste 6 timer: 
+                - symbol
+                - lufttemperatur (range)
+                - regnmengde (range)
+                - sansynlighet for regn    
+
+            neste 12 timer: 
+                - symbol
+                - symbol "sannsynlighet"
+                - sannsynlighet for regn
+
+            Tar bare med instant + nestetime, 6 timer og i morgen (instant for timestamp om 24 timer)
+            */
+
+            //const iconUrl = `https://met.no{tallKode}.svg`;
+            //const iconUrl = `https://nrkno.github.io/yr-weather-symbols/symbols/lightmode/${vaerIkonTall}.svg`; //henter icon fra https://nrkno.github.io/yr-weather-symbols/) 
+
+            if (!res.ok) throw new Error(`HTTP feil! Status: ${res.status}`);
+
+            const data = await res.json();
+            const timeseries = data.properties.timeseries;
+                        // Henter  temperatur (forste element i tidsserien)
+            /*
+            tidspunkter:
+            instant
+            next_1_hours
+            next_6_hours
+            next_12_hours
+
+            *** HVER Time i døgnet (de neste par dagene) har sin egen "instant", "neste time", "neste 6 tiemr"... 
+            */
+
+            const forecast = timeseries[timerfranu]; //Ny instant (så om 24 timer, ikke de neste 24 timer) 
+            const temp = forecast.data.instant.details?.air_temperature;
+            const symbol = forecast.data.next_1_hours?.summary?.symbol_code || "cloudy"; // if vær not found, vær = cloudy
+            const regn_min = forecast.data.next_1_hours?.details?.precipitation_amount_min; 
+            const regn_max = forecast.data.next_1_hours?.details?.precipitation_amount_max; 
+            //const regnProb = forecast.data.next_1_hours?.details?.probability_of_precipitation;
+
+            const nor = getTime(timerfranu)
+            
+            const variabler = [temp ,symbol, regn_min, regn_max, hentTallKode(symbol), nor.klokkeslett, nor.dag];            
+            return variabler;
+        } catch (error) {
+            console.error("Kunne ikke hente værdata:", error);
+        }
+    };
+
+    async function getEvents() {
+        console.log("Henter arrangementer")
+        const url = 'https://calendar.google.com/calendar/embed?src=fse1dddq3jjn4qu9qnf2cgfm08%40group.calendar.google.com&ctz=Europe%2FOslo';
+        const CalenderID = 'fse1dddq3jjn4qu9qnf2cgfm08@group.calendar.google.com';
+        const CalenderKey = 'AIzaSyDFZPVjwZk6XFbGE2g_9xVSFtq3Qybm0oI'
+        const now = new Date().toISOString();
+        console.log("definerer v3")
+        //const v3 = `https://googleapis.com${encodeURIComponent(CalenderID)}/events?key=${CalenderKey}&timeMin=${now}&orderBy=startTime&singleEvents=true&maxResults=5`; //Setter MaxResults = 5 = de neste 5 arrangementene
+        const antallArrengmenter = 8;
+        const v3 = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CalenderID)}/events?key=${CalenderKey}&timeMin=${now}&orderBy=startTime&singleEvents=true&maxResults=${antallArrengmenter}`;
+        console.log("Vurderer å prøve")
+        console.log("V3", v3)
+        try {
+            console.log("Prøver noe")
+            const res = await fetch(v3); 
+
+            console.log("Res ok?")
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error("Google API svarte:", res.status, errorText);
+                throw new Error(`Google API feil! Status: ${res.status}`);
+            }
+            console.log("Res ok")
+
+
+            const data = await res.json();
+            const events = data.items; // Dette er arrayet med alle arrangementene
+
+            console.log("Kommende arrangementer:", events);
+            return events;
+
+        } catch (error) {
+            console.error("Klarte ikke å hente kalenderdata:", error);
+            return [];
+        }
+    };
+    async function oppdaterKalenderSkjerm(div_ID) {
+        const arrangementer = await getEvents();
+        const kalenderDiv = document.getElementById(div_ID);
+
+        if (kalenderDiv) {
+            kalenderDiv.innerHTML = ""; // Tømmer boksen før vi starter
+
+            if (arrangementer.length === 0) {
+                kalenderDiv.innerHTML = "<p>Ingen kommende arrangementer.</p>";
+                return;
+            }
+
+            arrangementer.forEach(event => {
+                const tittel = event.summary || "Uten tittel";
+                
+                // Google lagrer datoer annerledes for heldagsarrangementer kontra time-arrangementer
+                const startDatoTid = event.start.dateTime || event.start.date;
+                
+                // Formaterer datoen til et pent norsk format (f.eks. "3. okt., 18:00")
+                const formatertDato = new Date(startDatoTid).toLocaleString("no-NO", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+                //event.description er også mulig, men fylles ikke inn i HC-kalenderen som standard
+
+                kalenderDiv.innerHTML += `
+                    <div class="event-item" style="margin-bottom: 8px;">
+                        <div style="font-weight: bold;">${tittel}</div>
+                        <div style="font-size: 13px; opacity: 0.8;">${formatertDato}</div>
+                        <div style="font-size: 13px; opacity: 0.8;">${event.location}</div>
+                    </div>
+                `;
+            });
+        }
+    }
+
+
+
+    // Kjører alt med en gang siden laster inn
+    refresh();
+
+    // Felles intervall-løkke som oppdaterer ALT hvert 30. sekund
+    setInterval( () => {
+        refresh();
+
+        
+    }, 30000); //oppdateres hvert 30. sekund (2x i minuttet)
+
+    setInterval(async () => { //async for await getSheetValuesExternal()
+        fuckoff();
+
+        const updateMemes = await getSheetValuesExternal(); //gjør at den henter nye memes automatisk
+
+        if (updateMemes.length > 0) {
+            playlist = updateMemes;     
+            
+            if (currentMeme >= playlist.length) { //Starter på ny når nye memes er hentet
+                currentMeme = 0;
+            }
+        }
+    }, 600000); //oppdateres hvert 10. minutt)   
+
+    // Samlet funksjon som oppdaterer både busser, klokke og vær samtidig
+    function refresh() {
+        // Bussene
+        //loadBoard("MS_FS", MOHOLT_FS);
+        //loadBoard("MS_MS", MOHOLT_MS);
+        loadBoard("HH_MS", HESTEHAGEN_MS);
+        loadBoard("HH_FS", HESTEHAGEN_FS);
+        loadBoard("GLOS_FS", GLOSHAUGEN_FS);
+        loadBoard("GLOS_MS", GLOSHAUGEN_MS);
+        loadBoard("HSR_FS", HOISKOLERINGEN_FS);
+        loadBoard("HSR_MS", HOISKOLERINGEN_MS);
+
+        //Klokke
+        const element = document.getElementById("Klokka");
+        const tid = getTime(0);
+
+        if (element) {
+            element.textContent = tid.tid;
+        };
+  
+        //Div
+        oppdaterKalenderSkjerm("kalender");
+        getWeatherForecast("temp"); // getWeatherForecast blir bare kjørt når fuckern står her wtf javel oppdater hvermeldingen hver 30. sekund da
+    }
+
+    function fuckoff() {
+        getWeatherForecast("temp"); //Vet ikke om denne gjør noe 
+    }
+
+    //MEME-Carusel
+    /* Omkoding av sangkarusellen til Fri-Yatzy-siden, derfor ser det litt rart ut med "NextSong();" og sånt */
+    const carouselContainer = document.getElementById("memecarusel");
+    const carouselImage = document.getElementById("carouselImage");
+
+    //const sheet = "https://docs.google.com/spreadsheets/d/19kEWihAMnC2esj6vGYGFjxO4ZAMkH2Q0SP0DxG4WXZA";
+
+
+    async function getSheetValuesExternal() {
+        const spreadsheetId = '19kEWihAMnC2esj6vGYGFjxO4ZAMkH2Q0SP0DxG4WXZA'; // The part after /d/ in your URL
+        const range = 'Sheet1!C2:C'; // Ser gjennom HELE kolonne C (fra og med rad 2)
+        const apiKey = 'AIzaSyDXIPJoqiN1bCqXrgwF9frspm3_2NSrbus';
+        
+        const url =`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            // Flatten 2D array [[val1], [val2]] into ['val1', 'val2']
+            const flatValues = data.values ? data.values.flat() : [];
+            console.log(flatValues);
+            return flatValues;
+        } catch (error) {
+            console.error('Error fetching sheet data:', error);
+        }
+    }
+
+    let playlist = [];
+    let currentMeme = 0;
+    let carouselInterval = null;
+    let isPaused = false;
+
+    async function init() {
+        try {
+            playlist = await getSheetValuesExternal();
+
+            console.log("Playlist:", playlist);
+            console.log("Antall bilder:", playlist.length);
+
+            if (!playlist || playlist.length === 0) {
+                console.error("Ingen bilder ble hentet fra Google Sheet.");
+                return;
+            }
+
+            currentMeme = Math.floor(Math.random() * playlist.length);
+
+            // Først når playlist faktisk er lastet:
+            displayMeme();
+            startCarousel();
+
+        } catch (error) {
+            console.error("Kunne ikke starte karusellen:", error);
+        }
+    }
+
+    function displayMeme() {
+        console.log("displayMeme:", playlist, currentMeme);
+
+        if (!playlist || playlist.length === 0) {
+            console.error("Playlist er tom eller undefined.");
+            return;
+        }
+
+        carouselImage.src = playlist[currentMeme];
+        updateStatus();
+    }
+
+    function startCarousel() {
+        isPaused = false;
+
+        clearInterval(carouselInterval);
+        carouselInterval = setInterval(nextMeme, 5000);
+
+        updateStatus();
+    }
+
+    function pauseCarousel() {
+        isPaused = true;
+        clearInterval(carouselInterval);
+        updateStatus();
+    }
+
+    function nextMeme() {
+        if (playlist.length === 0) return;
+
+        currentMeme = (currentMeme + 1) % playlist.length;
+        displayMeme();
+    }
+
+    function togglePlay() {
+        if (isPaused) {
+            startCarousel();
+            displayMeme();
+        } else {
+            pauseCarousel();
+        }
+    }
+
+    function nextSong() {
+        clearInterval(carouselInterval);
+
+        nextMeme();
+
+        if (!isPaused) {
+            startCarousel();
+        }
+    }
+
+    function updateStatus() {
+        console.log(
+            "Karusell-status: " +
+            (isPaused ? "pauset" : "spiller")
+        );
+    }
+
+    // IKKE bruk window.onload til displayMeme()
+    init();
+
+
+    </script>
+</html>

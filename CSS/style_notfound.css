@@ -1,0 +1,14 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 20px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Keep it centered when wrapping */
+    background-image: url('/Bilder/6f8d1b99-b4bd-41ca-a896-8e4624953c3e.png'); /* Path to your background image */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: contain; /* Better handling of aspect ratio */
+    background-position: center; /* Position the image such that the bottom is visible, cropping the top */
+}

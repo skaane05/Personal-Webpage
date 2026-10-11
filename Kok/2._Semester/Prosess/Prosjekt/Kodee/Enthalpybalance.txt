@@ -1,0 +1,320 @@
+from scipy.optimize import root
+from scipy.integrate import quad
+import numpy as np
+from constanst8 import *
+from Massbalance import massebalanser
+
+#Heat capacity constanst from constant8.py:
+
+water_hc = [Aw, Bw, Cw]
+pureMEA_hc = [Aa, Ba, Ca]
+CO2absMEA_hc = [Ac, Bc, 0.0]
+MEAsol_hc = [As, Bs, Cs] #for cp_sol
+
+#Heat Capacity functions:
+
+def cp(i, T): #Unit: kJ/kg
+    A = i[0]
+    B = i[1]
+    C = i[2]
+    return A + B*T + C*(T**2)
+
+def cp_sol(T): #Units: kJ/kg
+    w_MEA = 0.3
+
+    ledd1 = (1-w_MEA)*cp(water_hc, T)
+    ledd2 = w_MEA*cp(pureMEA_hc, T)
+    ledd3 = w_MEA*(1-w_MEA)*(As + Bs*T + Cs*w_MEA*((T-273.15)**(-1.5859)))
+
+    return ledd1 + ledd2 + ledd3
+
+#Defining a variable called integral to help with calculations later
+integral = lambda f, x0, x1: quad(f, x0, x1)[0]
+
+
+#Initial values for fractions in stream 1
+wc1 = 0.09
+wh1 = 0.03
+wn1 = 0.795
+wo1 = 0.085
+
+#Other information
+w_capture = 0.85
+a_3 = 0.21
+a_4 = 0.47
+wc9 = 1        # massfraction for CO2 in stream 8
+xc8 = 0.7      # molar fraction for CO2 in stream 8
+xh8 = 1-xc8
+wc8 = xc8*Mw[0]/(xc8*Mw[0]+xh8*Mw[1]) #Expressing the molar fraction as massfraction
+wh8 = 1-wc8
+
+#Fetching data from "Massebalanser"
+solution_massebalanser = massebalanser()
+x = [round(i, 3) for i in solution_massebalanser.x]
+
+m_1 = 750 
+m_2 = x[0]
+m_3 = x[1]
+m_4 = x[2]
+m_5 = m_4
+m_6 = m_7 = m_3
+m_8 = x[3]/wc8
+m_9 = x[3]
+
+mass_of_stream = [m_1, m_2, m_3, m_4, m_5, m_6, m_7, m_8, m_9]
+mass_of_stream = [float(i) for i in mass_of_stream] #Convert form np.float64 to float
+
+Fractions = { #Values imported from massebalanser()
+    "CO2":[0.09, 0.015, 0.0454, 0.102, 0.102, 0.045, 0.045, 0.851, 1.0],
+    "H2O":[0.03, 0.032, 0.0, 0.0, 0.0, 0.0, 0.0, 0.149, 0.0],
+    "N2":[0.795, 0.861] + [0.0]*7,
+    "O2":[0.085, 0.092] + [0.0]*7,
+    "MEA":[0.0, 0.0, 0.9546, 0.8984, 0.8984, 0.9546, 0.9546, 0.0, 0.0]
+}
+
+def EnthalpyOfStream(stream, T, Tref = Tref_K): #stream = stream number, T = temperature of stream in Kelvin
+    stream -= 1 #correcting for index of values in keys in Fraction
+    H_co2 = hf[0]*mass_of_stream[stream]*Fractions["CO2"][stream] #enthalpy at T_ref
+    
+    if stream >= 3 and stream <=7: #CO2 is NOT a Gas
+        H_co2 += mass_of_stream[stream] * Fractions["CO2"][stream] * habs_m / (Mw[0]/1000) 
+        H_co2 += mass_of_stream[stream] * Fractions["CO2"][stream] * integral(lambda T: cp(CO2absMEA_hc,T), Tref, T) #enthalpy difference between Tref and T
+    else: #When CO2 IS in Gas fase
+        H_co2 += mass_of_stream[stream] * Fractions["CO2"][stream] * cpg[0]*(T - Tref)
+    
+    H_h2o = mass_of_stream[stream] * Fractions["H2O"][stream] * (hf[1] + cpg[1]*(T - Tref)) #Always in Gas (liquid is included in MEA)
+
+    H_n2 = mass_of_stream[stream] * Fractions["N2"][stream] * (hf[2] + cpg[2]*(T - Tref)) #Always in Gas
+
+    H_o2 = mass_of_stream[stream] * Fractions["O2"][stream] * (hf[3] + cpg[3]*(T - Tref)) #Always in Gas
+
+    H_MEA = mass_of_stream[stream] * Fractions["MEA"][stream] * (hfsol + integral(cp_sol, Tref, T))
+
+    H = H_co2 + H_h2o + H_n2 + H_o2 + H_MEA
+
+    return H #units: kW 
+
+
+for i in range(1,10): #i == 8 => strøm 9
+    if i != 7:
+        print(f"Strøm {i}, T = {round((T[i-1]+273),2)}: {EnthalpyOfStream(i, T[i-1]+273)/1000} MW")
+    else: 
+        print(f"Strøm {7}, T = 333.87: {EnthalpyOfStream(7, 333.87)/1000} MW")
+
+
+def HeatExhangerV1():
+    def equations(unknown):
+        T_7, A, dTlm = unknown
+
+        U = 1.1 #kW/(m^2*K)
+
+        m_cold = m_4
+        m_warm = m_6
+        T_cold_inn = T[3] + 273
+        T_cold_out = T[4] + 273
+        T_warm_inn = T[5] + 273
+        T_warm_out = T_7
+
+        dT1 = T_warm_inn - T_cold_out
+        dT2 = T_warm_out - T_cold_inn
+
+        log_term = np.log(dT1 / dT2)
+
+        H4 = EnthalpyOfStream(4, T[3] + 273)
+        H5 = EnthalpyOfStream(5, T[4] + 273)
+        H6 = EnthalpyOfStream(6, T[5] + 273)
+        
+        H7 = H4 + H6 - H5 # In  = Out
+
+        #Q = H5 - H4 = H7 - H6 | looking at the absolute values of the differences
+
+        Q_v1 = (H5 - H4) #Ought to be positive, since the cold stream takes heat from the hot stream 
+
+        return [
+            Q_v1 - U*A*dTlm,
+            dTlm - (dT1 - dT2)/log_term,
+            H7 - EnthalpyOfStream(7, T_7)
+        ]
+    
+    
+    initial_guess = [350, 20000, 30]
+
+    solution = root(equations, initial_guess, method="lm")
+
+    #Returns the results in the form of a dictionary:
+    return {
+    "T7 [K]": round(solution.x[0], 2),
+    "A [m^2]": int(solution.x[1]),
+    "dTlm [K]": round(solution.x[2], 2),
+    "success": solution.success,
+    "message": solution.message
+    }
+
+def CoolerV2():
+    
+    T_10 = T[9] + 273
+    T_11 = T[10] + 273
+    T_7 = HeatExhangerV1()["T7 [K]"] 
+    T_3 = T[2] + 273
+
+    H3 = EnthalpyOfStream(3, T_3) #kW
+    H7 = EnthalpyOfStream(7, T_7)
+
+    Q_v2 = H3 - H7 #kW
+
+    #Stream 10 and 11: m10 = unkown, Q_v2 = H11 - H10 = m10*(h11-h10) |where m10 = m11
+
+    h10 = integral(lambda T: cp(water_hc, T), Tref_K, T_10)
+    h11 = integral(lambda T: cp(water_hc, T), Tref_K, T_11)
+
+    m_10 = -Q_v2/(h11-h10)
+
+    Q = m_10*integral(lambda T: cp(water_hc, T), T_10, T_11)
+
+    return {
+        "m10 [kg/s]" : round(m_10, 2),
+        "Q_v2 [kW]" : round(Q_v2, 2),
+        "Q [kW]": round(Q, 2)
+    }
+
+def CoolerV3(): 
+    T_8 = T[7] + 273
+    T_12 = T[8] + 273 #Equals the temperature in stream 9
+    T_100 = 100 + 273
+
+    m8 = mass_of_stream[7]
+    
+    H8 = EnthalpyOfStream(8, T_8) #0.851 CO2 + 0.149 H2O(g)
+    H8_uten_vann = H8 - mass_of_stream[8] * Fractions["H2O"][8] * (hf[1] + cpg[1]*(T_8 - Tref_K))
+    dHvap = dHsub - dHfus
+
+    H12 = EnthalpyOfStream(9, T_12) #The CO2 content of stream 12 is the full content of Stream 9, hence H12 = The enthalpy of stream 9 at the temperature of T_12 (which is equal to T_9)
+
+    Q_v3 = H12 - H8
+
+    q_kondens = -wh8*m8*dHvap
+    q_vann_g = wh8*m8*cpg[1]*(T_100 - T_8)
+    q_vann_l = wh8*m8*integral(lambda T: cp(water_hc, T), T_100, T_12)
+    q_CO2 = H12 - (H8_uten_vann) 
+
+    Q_v3 = -(q_kondens + q_vann_g + q_vann_l + q_CO2) #Ought to be negative, since it is the loss of these enthalpies
+    return {
+        "Q_v3 [kW]" : round(Q_v3, 2),
+    }
+
+
+def BoilerV4():
+
+    H6 = EnthalpyOfStream(6, T[5] + 273)
+    H5 = EnthalpyOfStream(5, T[4] + 273)
+    H9 = EnthalpyOfStream(9, T[8] + 273)
+    Q_v3 = CoolerV3()["Q_v3 [kW]"]
+
+    Q_v4 = abs(H6 + (H9 - Q_v3) - H5)
+    return {
+        "Q_v4 [kW]" : round(Q_v4, 2),
+    }
+
+def OneStepCompression():
+
+    #A way to convert from [bar] to [Pa]
+    barToPa = 1e5
+
+    #Values From A.7 in "TKP4120 - Prosjektoppgave - CO2-fangst - Vår 2025"
+    #In: 
+    T_in = T[8] + 273 # 298 K
+    p_9 = p[8]*barToPa 
+
+    #Out of compressor:
+    p_b = 20*barToPa
+    #T_b = unknown
+    my = 0.85 # efficiency
+
+    # After cooling:
+    T_out = 303
+    p_out = 20*barToPa #bar
+
+    n = mass_of_stream[8]/(Mw[0]/1000) #Units: kg/s / (g/mol / 1000) = kg/s / (kg/mol) = mol/s
+    R = gasConst #J/(K mol)
+    Cp = cpg[0]*(Mw[0]) #Units: J/(mol K)
+    
+    
+    T_2 = lambda T_1, p1, p2: T_1*((p2/p1)**(R/Cp))
+    T_b = T_2(T_in, p_9, p_b)
+    W_s = n*Cp*(T_b - T_in)/eta
+    
+    #T_b = Ws/(mass_of_stream[8]*cpg[0]*1000) + T_in #cpg[0]*1000 to get units in J
+
+    BeforeQ = EnthalpyOfStream(9, T_b)
+    AfterQ = EnthalpyOfStream(9, T_out)
+
+    Q = AfterQ - BeforeQ #Units; kW
+    #Alternative (gives same value) Q2 = mass_of_stream[8]*cpg[0]*(T_out - T_b)
+
+
+    return {
+        "Ws [MW]" : round(W_s/1e6, 3),
+        "T_b [K]": round(T_b, 2),
+        "Q [MW]": round(Q/1e3, 3),
+    }
+
+def ThreeStepCompression():
+
+    barToPa = 1e5
+    #Values From A.7 in "TKP4120 - Prosjektoppgave - CO2-fangst - Vår 2025"
+    T_in = T[8] + 273
+    p_in = p[8]*barToPa
+
+    #T_b = unknown
+    p_b = 4*barToPa
+
+    T_c = 303
+    p_c = 4*barToPa
+
+    #T_d = 
+    p_d = 8*barToPa
+
+    T_e = 303
+    p_e = 8*barToPa
+
+    #T_f
+    p_f = 20*barToPa
+
+    T_out = 303
+    p_out = 20*barToPa
+    
+    n = mass_of_stream[8]/(Mw[0]/1000) #Units: kg/s / (g/mol / 1000) = kg/s / (kg/mol) = mol/s
+    R = gasConst #J/(K mol)
+    Cp = cpg[0]*(Mw[0]) #Units: J/(mol K)
+
+    T_2 = lambda T_1, p1, p2: T_1*((p2/p1)**(R/Cp)) #T_2 expressed by equation 3.6.3 
+    Wrev = lambda T_2, T_1: n*Cp*(T_2 - T_1) #Equation 3.6.2
+
+    T_b = T_2(T_in, p_in, p_b)
+    T_d = T_2(T_c, p_c, p_d)
+    T_f = T_2(T_e, p_e, p_f)
+
+    #T_b = Ws/(mass_of_stream[8]*cpg[0]*1000) + T_in
+
+    W_9b = Wrev(T_in, T_b)/eta
+    Q_bc = EnthalpyOfStream(9, T_c) - EnthalpyOfStream(9, T_b)
+
+    W_cd = Wrev(T_c, T_d)/eta
+    Q_de = EnthalpyOfStream(9, T_e) - EnthalpyOfStream(9, T_d)
+
+    W_ef = Wrev(T_e, T_f)/eta
+    Q_f_out = EnthalpyOfStream(9, T_out) - EnthalpyOfStream(9, T_f)
+
+    W_tot = -(W_9b + W_cd + W_ef)/1e6 #Units: MW
+    Q_tot = (Q_bc + Q_de + Q_f_out)/1e3 #Units: MW
+
+    return {
+        "T_b [K]": round(T_b, 3),
+        "Q_bc [kW]": round(Q_bc, 3),
+        "T_d [K]": round(T_d, 2),
+        "Q_de [kW]": round(Q_de, 3),
+        "T_f [K]": round(T_f, 2),
+        "Q_f_out [kW]": round(Q_f_out, 3),
+        "Q_tot [MW]": round(Q_tot, 3),
+        "W_tot [MW]": round(W_tot, 3),
+    }

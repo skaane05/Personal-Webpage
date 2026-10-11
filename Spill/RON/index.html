@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameshow!</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style> 
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at center, #b259ff 0%, #3a185c 100%);
+            color: white;
+            padding: 40px 20px;
+            display: flex;
+        }
+        @media (max-width: 1000px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+            }
+            div {
+                width: 90% !important; /* Overrides <div style=""..."> */
+                overflow: auto; /* Adds scrollbar if necessary */
+                height: auto !important; /* Adjust height for smaller screens */
+            }
+            iframe {
+                height: 700px !important; /* Adjust iframe height for smaller screens */
+            }
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+        div {
+            display: inline;
+        }
+
+        .button-4 {
+            width: 200px;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            background-color: #b259ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-4:hover {
+            background-color: #3a185c;  /* Darker, almost black background on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <form action="../../">
+        <button type="submit" class="button-4" style="vertical-align:middle">Tilbake</button>
+    </form>
+    <div style="width: 30%; padding: 15px;">
+        <h1>Spillregler</h1> 
+        <h2>Fjern pdf og kort ned tekst</h2>
+        <p>Det deles ut 12 kort til hver spiller.</p>
+        <p>Det kreves 2 kortstokker for hver andre deltager***</p>
+        <p>Målet er å få så få poeng som mulig. Spillet er ferdig når første mann fullfører den siste oppgaven.</p>
+        <p>
+            Fra resten av bunken snus et øverste kortet og legges til siden (insert bilde). 
+            Førstemann trekker enten øverst fra bunken eller kortet med bilde-siden opp.
+            Deretter legger hen fra seg et kort med bilde opp (over kortet som ligger der fra før / lå der).
+            Neste man gjør det samme; velger å trekke fra bunken eller fra kortet med bilde-siden opp.
+        </p>
+        <p>
+            På <u>sin tur etter trekt kort</u> når man har kort som tilfredstiller (hele) oppgaven kan hen legge oppgaven ned foran seg m/ bilde opp foran en selv. 
+            Dette kan først gjøres når førstemann har trukket sitt andre kort (altså etter en runde med korttrekking). 
+        </p>
+        <p>
+            Deretter kan dem <u>på sin tur etter trekt kort</u>, <strong>om de har fullført sin oppgave</strong>, 
+            legge kort <u>til</u> på de oppgavene som er lagt ned av andre spillere eller sin egen.
+            F.eks. om spiller A har lagt ned en hjerter rekke på 5->6, kan spiller B (på sin tur) legge til 4 og/eller 7 (og evt 8 om de også legger på 7) (hjertere) til rekken blir full.
+            Den full rekke er fra 4 til Ess (14). Når en rekke/oppgave ikke er mulig å legge til flere kort på, samles kortene og snus opp ned. De er ikke med i runden lenger. 
+            Spiller B avslutter sin tur ved å legge et kort med bilde opp.
+        </p>
+        <p>
+            Man kan <strong>ikke</strong> legge kort på andres oppgaver om du ikke har gjort din egen oppgave først.
+        </p>
+        <p>
+            Du kan <strong>ikke</strong> legge ned flere repetisjoner av din egen oppgave. 
+        </p>
+        <p>
+            Alle rekker <strong>skal</strong> ha samme drakt (♥, ♦, ♣, ♠) - med mindre oppgaven presiserer annet.
+        </p>
+        <p>
+            Poenget med spillet er å få minst mulig poeng. Noe som oppnås ved å legge ned oppgaver og legge til kort på andres oppgaver.
+        </p>
+        <p>
+            Runden fortsetter til en spiller er tom for kort på hånden. Etter reglene er dette bare mulig ved å legge på kort til egen og andres oppgaver 
+            siden man skal alltid trekke et kort før man handler og legge fra seg et kort ved avsluttet tur.
+                        
+        </p>
+        <p>
+            Om du har fullført oppgaven din, begynner du på neste oppgave til neste runde. Andremann i runde 1 blir førstemann i runde 2 osv.
+            Før neste runde begynner, telles poengene basert på kortene i hånden. 
+        </p>
+
+
+
+    </div>
+    <div style="width: 60%; padding: 15px;">
+        <h1>Poengsystem</h1>
+        <iframe id="pdf-viewer" src="Run_to_Nine_Spillregler.pdf" frameborder="0" style="width: 100%; height: 100%;"></iframe> <!-- Width of entire div which is 60% of screen -->
+    </div>
+</body>
+</html>

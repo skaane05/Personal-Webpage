@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Fri Yatzy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script> <!-- For CryptoJs-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #222;
+    flex-direction: column;
+  }
+
+  .piano {
+    display: flex;
+    position: relative;
+  }
+
+  .white {
+    width: 60px;
+    height: 200px;
+    background: white;
+    border: 1px solid #000;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.4);
+    margin: 0;
+    z-index: 1;
+  }
+
+  .black {
+    width: 40px;
+    height: 120px;
+    background: black;
+    position: absolute;
+    margin-left: -20px;
+    z-index: 2;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .pressed {
+    background: #ccc !important;
+    transform: translateY(4px);
+  }
+
+  h1 {
+    color: white;
+    font-family: sans-serif;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<h1>🎵 Piano-spill</h1>
+<div class="piano" id="piano" style="color: rgb(255, 68, 47);">
+  <!-- Hvite tangenter -->
+  <div class="white" data-key="A">A</div>
+  <div class="white" data-key="S">S</div>
+  <div class="white" data-key="D">D</div>
+  <div class="white" data-key="F">F</div>
+  <div class="white" data-key="G">G</div>
+  <div class="white" data-key="H">H</div>
+  <div class="white" data-key="J">J</div>
+  <div class="white" data-key="K">K</div>
+  <div class="white" data-key="L">L</div>
+  <div class="white" data-key="Ø">Ø</div>
+
+  <!-- Svarte tangenter -->
+  <div class="black" style="left: 60px;" data-key="W">W</div>
+  <div class="black" style="left: 130px" data-key="E">E</div>
+  <div class="black" style="left: 250px" data-key="T">T</div>
+  <div class="black" style="left: 315px" data-key="Y">Y</div>
+  <div class="black" style="left: 370px" data-key="U">U</div>
+  <div class="black" style="left: 500px" data-key="O">O</div>
+  <div class="black" style="left: 560px" data-key="P">P</div>
+</div>
+<!-- Download tones from https://samplefocus.com/samples -->
+<script>
+  const keyMap = {
+    'A': 'C',
+    'W': 'C#',
+    'S': 'D',
+    'E': 'D#',
+    'D': 'E',
+    'F': 'F',
+    'T': 'F#',
+    'G': 'G',
+    'Y': 'G#',
+    'H': 'A',
+    'U': 'A#',
+    'J': 'B',
+    'K': 'C2',
+    'O': 'C#2',
+    'L': 'D2',
+    'P': 'D#2',
+    'Ø': 'E2'
+  };
+
+  function playSound(note) {
+    const audio = new Audio(`sounds/${note}.wav`);
+    audio.currentTime = 0;
+    audio.play();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const key = e.key.toUpperCase();
+    const note = keyMap[key];
+    if (!note) return;
+
+    playSound(note);
+    const keyElement = document.querySelector(`[data-key="${key}"]`);
+    if (keyElement) keyElement.classList.add('pressed');
+  });
+
+  document.addEventListener('keyup', (e) => {
+    const key = e.key.toUpperCase();
+    const keyElement = document.querySelector(`[data-key="${key}"]`);
+    if (keyElement) keyElement.classList.remove('pressed');
+  });
+</script>
+</body>
+</html>

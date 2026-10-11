@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameshow!</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style> 
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at center, #2b2bff 0%, #1b1b40 100%);
+            color: white;
+            padding: 40px 20px;
+        }
+
+        /* Custom scrollbar for scroll-container */
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #8888ff #222244;
+        }
+        .scroll-container::-webkit-scrollbar {
+            height: 12px;
+            background: #222244;
+            border-radius: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #4a4aff 60%, #8888ff 100%);
+            border-radius: 8px;
+            border: 2px solid #222244;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: #222244;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 40px;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 40px;
+        }
+
+        .game-board {
+            flex: 0 0 90%;
+            scroll-snap-align: center;
+            background-color: #ffffff10;
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 320px;
+            max-width: 400px;
+            min-height: 350px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            width: 100%;
+            aspect-ratio: 4 / 3; /* Maintain consistent shape, e.g., 4:3 or 16:9 */
+            background-image: url('/Bilder/yatzy_logo.jpg'); /* Default background-image, Replace with your image URL */
+            background-size: contain; /* Show the whole image */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Se de mest spillavhengige her!</h1>
+    <h3 style="text-align: center;">Sist oppdatert: Juni 2025</h3>
+    <div class="scroll-container">
+        <div class="game-board">
+            <div class="game-title">Se hvem som har vært på ledertavlene tidligere...</div>
+            <button class="button" role="button" style="background-image: url(/Bilder/historybooks.svg);" onclick="location.href='HoF/'"></button>
+        </div>
+        <div class="game-board">
+            <div class="game-title">... eller se tidenes ledertavle!</div>
+            <button class="button" role="button" style="background-image: url(/Bilder/pocket-watch.svg);" onclick="location.href='Ledertavlene/'"></button>
+        </div>
+    </div>
+</body>
+</html>

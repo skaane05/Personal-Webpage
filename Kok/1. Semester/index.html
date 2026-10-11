@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
+    <link href="../../../CSS/style.css" rel="stylesheet"/>
+    <title>1. Semester</title>
+    <!-- Takk til https://williada.folk.ntnu.no for koden!!!-->
+    <style>
+        /* Add CSS styles for your buttons here */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    
+        button {
+            width: 200px;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            background-color: rgb(77, 145, 168);
+            color: #ffffff;   /* Change the text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;  /*Change the background color on hover */
+        }
+
+        iframe {
+            width: 80%;
+            height: 800px; /* Adjust the height as needed */
+            border: none;
+        }
+        body {
+            background-color: lightcyan; /* Change the background color */
+            font-family: 'Oxygen', sans-serif; /* Use the Oxygen font */
+        }
+    </style>
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PNJ5XKVFTR');
+</script>
+<body>
+    <h1>1. Semester</h1>
+
+    <div style = "display: flex; flex-direction: row;margin: 20px">
+        <div style ="display: flex;flex-direction: column;">
+            <form action="../">
+                <button type="submit" class="button" style="vertical-align:middle">Tilbake</button>
+            </form>
+
+            <div style = "padding: 20px;">
+                <ul id="pdf-list">
+                    <!-- PDF file names will be displayed as buttons here -->
+                </ul>
+            </div>
+        </div>
+
+            <iframe id="pdf-viewer" src="" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const pdfList = document.getElementById('pdf-list');
+            const pdfViewer = document.getElementById('pdf-viewer');
+
+            // List of PDF file names
+            const pdfFolder = [
+                'Matte 1',
+                // Add more file names as needed
+            ];
+
+            // Function to load PDF into the iframe
+            function loadPDF(pdfFileName) {
+                pdfViewer.src = pdfFileName;
+            }
+
+            // Loop through the PDF files and create buttons
+            pdfFolder.forEach(folderName => {
+                const button = document.createElement('button');
+                button.textContent = folderName;
+                button.addEventListener('click', () => {
+                    loadFilesInFolder(folderName);
+                });
+                pdfList.appendChild(button);
+            });
+            // Function to load files in the selected folder
+            function loadFilesInFolder(folderName) {
+                // Clear existing list
+                pdfList.innerHTML = '';
+                const folderFiles = {
+                    'Matte 1': [
+                        'VektorromRegler.pdf',
+                    ],
+                };
+
+                const files = folderFiles[folderName] || []; // || [] if folder not found
+
+                files.forEach(fileName => {
+                    const button = document.createElement('button');
+                    button.textContent = fileName;
+                    button.addEventListener('click', () => {
+                        loadPDF(`${folderName}/${fileName}`);
+                    });
+                    pdfList.appendChild(button);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

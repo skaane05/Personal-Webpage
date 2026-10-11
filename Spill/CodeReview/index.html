@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polygon Radar Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    canvas {
+      max-width: 500px;
+      max-height: 500px;
+    }
+  </style>
+</head>
+<body>
+<h1>Hvor God er egentlig folkesidene's kode?</h1>
+<div style="display: flex; gap: 40px;">
+  <canvas id="radarChart1" width="300" height="300"></canvas>
+  <canvas id="radarChart2" width="300" height="300"></canvas>
+</div>
+
+
+<script>
+const ctx = document.getElementById('radarChart');
+
+// pentagonchart:
+const labels = ['#Emojies', 'Kopierbarhet', 'Orginalitet', 'Struktur', 'Vakkerhet'];
+
+const rawDataUser = {
+  '#Emojies': 12,
+  'Kopierbarhet': 78,
+  'Orginalitet': 80,
+  'Struktur': 94,
+  'Vakkerhet': 42
+};
+
+const rawDataRef = {
+  '#Emojies': 31,
+  'Kopierbarhet': 85,
+  'Orginalitet': 90,
+  'Struktur': 88,
+  'Vakkerhet': 88,
+};
+
+const scales = {
+  '#Emojies': [0, 100],
+  'Kopierbarhet': [0, 100],
+  'Orginalitet': [0, 100],
+  'Struktur': [0, 100],
+  'Vakkerhet': [0, 100]
+};
+
+function normalize(value, [min, max]) {
+  return (value - min) / (max - min);
+}
+
+const normalizedData = labels.map(label => normalize(rawDataUser[label], scales[label]));
+const normalizedRefData = labels.map(label => normalize(rawDataRef[label], scales[label]));
+
+new Chart(document.getElementById('radarChart1'), {
+  type: 'radar',
+  data: {
+    labels: labels,
+    datasets: [
+      { 
+        label: 'Perrur',
+        data: normalizedData,
+        fill: true,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',    // grønn-ish
+        borderColor: 'rgb(75, 192, 192)',
+        pointBackgroundColor: 'rgb(75, 192, 192)'
+      },
+      {
+        label: 'Andrhska',
+        data: normalizedRefData,
+        fill: true,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',     // rød
+        borderColor: 'rgb(255, 99, 132)',
+        pointBackgroundColor: 'rgb(255, 99, 132)'
+      }
+    ]
+  },
+  options: {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.dataset.label || '';
+            const index = context.dataIndex;
+            const category = labels[index];
+
+            const rawValue = label === 'Brukerens data'
+              ? rawDataUser[category]
+              : rawDataRef[category];
+
+            return `${label}: ${rawValue}`;
+          }
+        }
+      }
+    },
+    scales: {
+      r: {
+        min: 0,
+        max: 1,
+        ticks: {
+          display: false, // Sett til true om du vil vise prosent
+          stepSize: 0.2,
+          callback: (val) => `${(val * 100).toFixed(0)}%`
+        },
+        grid: {
+          circular: false, // polygon, ikke sirkel
+          lineWidth: 2
+        },
+        angleLines: {
+          color: 'rgba(0, 0, 0, 0.5)',    // radial lines from center
+          lineWidth: 1.5
+        },
+      }
+    }
+  }
+});
+
+//HexagonChart:
+
+const labels2 = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+const rawDataUser2 = {
+  A: 10,
+  B: 4,
+  C: 8,
+  D: 4,
+  E: 6,
+  F: 9
+};
+const rawDataRef2 = {
+  A: 5,
+  B: 9,
+  C: 2,
+  D: 5,
+  E: 3,
+  F: 6
+};
+const scales2 = {
+  A: [0, 10],
+  B: [0, 10],
+  C: [0, 10],
+  D: [0, 10],
+  E: [0, 10],
+  F: [0, 10]
+};
+
+const normalizedData2 = labels2.map(label => normalize(rawDataUser2[label], scales2[label]));
+const normalizedRefData2 = labels2.map(label => normalize(rawDataRef2[label], scales2[label]));
+
+new Chart(document.getElementById('radarChart2'), {
+  type: 'radar',
+  data: {
+    labels: labels2,
+    datasets: [
+      { 
+        label: 'Brukerens data',
+        data: normalizedData2,
+        fill: true,
+        backgroundColor: 'rgba(192, 192, 75, 0.2)',    // gul-ish?
+        borderColor: 'rgb(192, 192, 175)',
+        pointBackgroundColor: 'rgb(192, 192, 175)'
+      },
+      {
+        label: 'Gjennomsnitt',
+        data: normalizedRefData2,
+        fill: true,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',     // rød
+        borderColor: 'rgb(255, 99, 132)',
+        pointBackgroundColor: 'rgb(255, 99, 132)'
+      }
+    ]
+  },
+  options: {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.dataset.labels || '';
+            const index = context.dataIndex;
+            const category = labels2[index];
+
+            const rawValue = label === 'Brukerens data'
+              ? rawDataUser2[category]
+              : rawDataRef2[category];
+
+            return `${label}: ${rawValue}`;
+          }
+        }
+      }
+    },
+    scales: {
+      r: {
+        min: 0,
+        max: 1,
+        ticks: {
+          display: false, // Sett til true om du vil vise prosent
+          stepSize: 0.2,
+          callback: (val) => `${(val * 100).toFixed(0)}%`
+        },
+        grid: {
+          circular: false,// polygon, ikke sirkel
+          lineWidth: 1.5
+        },
+        angleLines: {
+          color: 'rgba(0, 0, 0, 0.5)',    // radial lines from center
+          lineWidth: 1.5
+        },
+      }
+   }
+  }
+});
+
+</script>
+
+</body>
+</html>

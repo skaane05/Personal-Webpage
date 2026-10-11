@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css">
+    <link href="../../../CSS/style.css" rel="stylesheet"/>
+    <title>1. Semester</title>
+    <!-- Takk til https://williada.folk.ntnu.no for koden!!!-->
+    <style>
+        /* Add CSS styles for your buttons here */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    
+        button {
+            width: 200px;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            background-color: rgb(77, 145, 168);
+            color: #ffffff;   /* Change the text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;  /*Change the background color on hover */
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px; /* Default height */
+            border: none;
+        }
+        
+        body {
+            background-color: lightcyan; /* Change the background color */
+            font-family: 'Oxygen', sans-serif; /* Use the Oxygen font */
+        }
+
+        /* Responsiv design for mobil og tablet */
+        @media (max-width: 768px) {
+            iframe {
+                height: 400px; /* Mindre høyde på tablet */
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+                font-size: 16px;
+            }
+
+            [style*="flex-direction: row"] {
+                flex-direction: column !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            iframe {
+                height: 300px; /* Enda mindre høyde på telefon */
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                font-size: 14px;
+                padding: 8px 15px;
+                margin: 8px 0;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PNJ5XKVFTR');
+</script>
+<body>
+    <h1>3. Semester</h1>
+
+    <div style = "display: flex; flex-direction: row;margin: 20px">
+        <div style ="display: flex;flex-direction: column;">
+            <form action="../">
+                <button type="submit" class="button" style="vertical-align:middle">Tilbake</button>
+            </form>
+
+            <div style = "padding: 20px;">
+                <ul id="pdf-list">
+                    <!-- PDF file names will be displayed as buttons here -->
+                </ul>
+            </div>
+        </div>
+
+        <iframe id="pdf-viewer" src="" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const pdfList = document.getElementById('pdf-list');
+            const pdfViewer = document.getElementById('pdf-viewer');
+
+            // List of PDF file names
+            const pdfFiles = [
+                'Organisk_Lab',
+                // Add more file names as needed
+            ];
+
+            function isMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            }
+
+            // Function to load PDF
+            function loadPDF(pdfFileName) {
+                if (isMobile()) {
+                    // On mobile: open in new tab [men er kinda i samme side]
+                    window.open(pdfFileName, '_blank');
+                } else {
+                    // On desktop: load in iframe
+                    pdfViewer.src = pdfFileName;
+                }
+            }
+
+            // Loop through the PDF files and create buttons
+            pdfFiles.forEach(fileName => {
+                const button = document.createElement('button');
+                button.textContent = fileName;
+                button.addEventListener('click', () => {
+                    // Load the PDF into the iframe when a button is clicked
+                    loadPDF(fileName);
+                });
+                pdfList.appendChild(button);
+            });
+        });
+    </script>
+</body>
+</html>

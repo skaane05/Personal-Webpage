@@ -1,0 +1,40 @@
+/*Hei*/
+body { font-family: Arial, sans-serif; margin: 20px; display: flex; 
+    background-image: url('/Bilder/Cow_\(Fleckvieh_breed\)_Oeschinensee_Slaunger_2009-07-07.jpg'); 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover; /*Use contain if picture is much bigger than pc-screen *AND has the correct ratio obvi, because cover focuses on ratio while contain focuses on getting the entire picture in frame*/
+    background-position: center; /* Crops the top rather than the bottom if the picture is too big*/
+    display: block
+    }
+
+nav {
+    display: block /*Over hverandre*/
+}
+nav ul {
+    display: flex; /*Ved siden av hverandre*/
+    list-style: none;  /* Fjerner standard punkter i <ul> */
+    padding: 0;
+}
+
+nav ul li {
+    margin: 20px; /* Legger litt mellomrom mellom knappene */
+}
+
+nav ul li img {
+    border-color: black;
+    border-radius: 5px;
+
+}
+
+.meme-wrapper img{
+    max-height: 300px;
+    max-width: 300px;
+    position: center;
+}
+
+.fade {
+    color: rgba(255, 251, 24, 0.96);
+    text-shadow: 4px 4px 15px #000000;
+    filter: dropshadow(color=#000000, offx=10, offy=10);
+}

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <title>Bar</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 20px;
+      background-color: oldlace;
+      display: flex;
+    }
+    @media (max-width: 768px) {
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Valgfritt: sentrer innhold horisontalt */
+            gap: 20px; /* Valgfritt: avstand mellom elementene */
+        }
+    }
+    
+    /*Det under er for top 20 poengsummer i tvungen yatzy */
+
+    .bar-graph-horizontal {
+      max-width: 600px;
+    }
+
+    .bar-graph-horizontal > div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .rank {
+      width: 20px;
+      margin-right: 5px;
+      opacity: 0;
+      animation: fade-in-text 2.2s forwards;
+    }
+
+    .bar {
+        height: 40px;
+        background-color: transparent;
+        flex: 1;
+        overflow: hidden; /* keep text inside */
+        padding: 0 20px; /* adjust as needed */
+    }
+    
+    .bar-fill {
+        height: 100%;
+        background-color: #64b2d1;
+        border-radius: 3px;
+        width: 0;
+        display: flex; /* enable flex layout for content */
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 10px;
+        font-weight: bold;
+        color: white;
+        animation: grow-bar 1.2s var(--delay) forwards;
+        overflow: hidden;
+    }
+
+    .bar-content {
+        width: 100%;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        justify-content: space-between; /* pushes name left, score right */
+        animation: fade-in-text 1.2s var(--delay) forwards;
+    }
+    .bar-content .name,
+    .bar-content .score { /*Basically text-align left og right, men siden dette ikke er div eller p sa chatGPT at man må gjøre det slik*/
+        flex: 0 1 auto;
+    }
+    .bar-content .score {
+        padding-left: 5px;
+    }
+
+
+    .gold .bar-fill {
+      background-color: #FFD700;
+    }
+    .silver .bar-fill {
+      background-color: #C0C0C0;
+    }
+    .bronze .bar-fill {
+      background-color: #CD7F32;
+    }
+
+    @keyframes grow-bar {
+      0% {
+        width: 0;
+      }
+      100% {
+        width: var(--bar-width);
+      }
+    }
+
+    @keyframes fade-in-text {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    /*Det under er for antall innsendte spill oversikt, kopiert fra HoF*/
+    .semester-board {
+        flex: 0 0 90%;
+        scroll-snap-align: center;
+        background-color: oldlace;
+        border-radius: 20px;
+        min-width: 320px;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .games {
+      font-size: 0.95em;
+      margin-top: 5px;
+    }
+
+    .list {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .player {
+      background: #FFEAD0;
+      border-radius: 10px;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 160px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+    <section class="bar-graph bar-graph-horizontal">
+        <h2>Top 20 Poengsummer i Yatzy</h2>
+        <div><span class="rank">1</span><div class="bar gold" style=" --delay: 0.1s;"><div class="bar-fill"><div class="bar-content"><span class="name" style="color: black;">ALMAAA🏆</span><span class="score" style="color: black;" id="score1">337</span></div></div></div></div>
+        <div><span class="rank">2</span><div class="bar silver" style=" --delay: 0.2s;"><div class="bar-fill"><div class="bar-content"><span class="name">Skaane🥈</span><span class="score" id="score2">336</span></div></div></div></div>
+        <div><span class="rank">3</span><div class="bar bronze" style=" --delay: 0.3s;"><div class="bar-fill"><div class="bar-content"><span class="name">Aslucky🥉</span><span class="score" id="score3">335</span></div></div></div></div>
+        <div><span class="rank">4</span><div class="bar" style="--delay: 0.4s;"><div class="bar-fill"><div class="bar-content"><span class="name">alma</span><span class="score" id="score4">326</span></div></div></div></div>
+        <div><span class="rank">5</span><div class="bar" style="--delay: 0.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Alma</span><span class="score" id="score5">323</span></div></div></div></div>
+        <div><span class="rank">6</span><div class="bar" style="--delay: 0.6s;"><div class="bar-fill"><div class="bar-content"><span class="name">Eskil</span><span class="score" id="score6">322</span></div></div></div></div>
+        <div><span class="rank">7</span><div class="bar" style="--delay: 0.7s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score7">322</span></div></div></div></div>
+        <div><span class="rank">8</span><div class="bar" style="--delay: 0.8s;"><div class="bar-fill"><div class="bar-content"><span class="name">Andreas</span><span class="score" id="score8">321</span></div></div></div></div>
+        <div><span class="rank">9</span><div class="bar" style="--delay: 0.9s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score9">321</span></div></div></div></div>
+        <div><span class="rank">10</span><div class="bar" style="--delay: 1.0s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score10">319</span></div></div></div></div>
+        <div><span class="rank">11</span><div class="bar" style="--delay: 1.1s;"><div class="bar-fill"><div class="bar-content"><span class="name">Alma</span><span class="score" id="score11">318</span></div></div></div></div>
+        <div><span class="rank">13</span><div class="bar" style="--delay: 1.3s;"><div class="bar-fill"><div class="bar-content"><span class="name">Alma</span><span class="score" id="score13">317</span></div></div></div></div>
+        <div><span class="rank">14</span><div class="bar" style="--delay: 1.4s;"><div class="bar-fill"><div class="bar-content"><span class="name">Alma</span><span class="score" id="score14">317</span></div></div></div></div>
+        <div><span class="rank">15</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Andreas</span><span class="score" id="score15">317</span></div></div></div></div>
+        <div><span class="rank">16</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score16">316</span></div></div></div></div>
+        <div><span class="rank">17</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score17">315</span></div></div></div></div>
+        <div><span class="rank">18</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Alma</span><span class="score" id="score18">315</span></div></div></div></div>
+        <div><span class="rank">19</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Mighty D</span><span class="score" id="score19">313</span></div></div></div></div>
+        <div><span class="rank">20</span><div class="bar" style="--delay: 1.5s;"><div class="bar-fill"><div class="bar-content"><span class="name">Andreas</span><span class="score" id="score20">312</span></div></div></div></div>
+    </section>
+    <section class="semester-board">
+        <h2>Flest *Innsendte* Spill (>10)</h2>
+        <div class="list">
+            <div class="column">
+                <div class="player">Mighty D<span class="games">99</span></div>
+                <div class="player">Andreas<span class="games">76</span></div>
+                <div class="player">John Olai<span class="games">52</span></div>
+                <div class="player">Alma<span class="games">30</span></div>
+                <div class="player">Ola<span class="games">30</span></div>
+                <div class="player">Peder<span class="games">25</span></div>
+                <div class="player">Maya<span class="games">16</span></div>
+                <div class="player">Viktor<span class="games">16</span></div>
+                <div class="player">Victoria<span class="games">14</span></div>
+                <!-- Aslak: 8 -->
+            </div>
+        </div>
+    </section>
+    <script>
+      // To calculate the width percentage for each bar based on the scores
+      const scores = document.querySelectorAll(".score");
+      let maxScore = document.getElementById("score1").textContent;
+      let minScore = document.getElementById("score20").textContent;
+
+      function calculateBarWidths2() {
+        scores.forEach(scoreElem => {
+          const score = parseInt(scoreElem.textContent);
+          const bar = scoreElem.closest('.bar');
+          const barFill = bar.querySelector('.bar-fill');
+          const barWidthPercent = 1 - ((maxScore - score) / (maxScore - minScore + 10));
+          bar.style.setProperty('--bar-width', barWidthPercent*100 + '%');
+          // Restart animation so it uses the newly-set value and honors --delay
+          barFill.style.animation = 'none';
+          // force reflow
+          void barFill.offsetWidth;
+          barFill.style.animation = '';
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', calculateBarWidths2);
+      
+      /*
+      function calculateBarWidths() {
+        scores.forEach(scoreElem => {
+          const score = parseInt(scoreElem.textContent, 10);
+          const barWidthPercent = (1 - ((maxScore - score) / (maxScore - minScore - 10))) * 100;
+          const barFill = scoreElem.closest('.bar-fill');
+          barFill.style.setProperty('--bar-width', barWidthPercent + '%');
+        });
+      }
+       Alternative (litt mer python-like)
+      function calculateBarWidths() {
+        let maxScore = document.getElementById("score1").textContent;
+        while (i <= 20) {
+          const scoreElem = document.getElementById("score" + i);
+          const score = parseInt(scoreElem.textContent); 
+          const barWidthPercent = (1 - ((maxScore - score) / (maxScore - minScore - 10))) * 100;
+          const barFill = scoreElem.closest('.bar-fill');
+          barFill.style.setProperty('--bar-width', barWidthPercent + '%');
+          i++;
+        }
+      }
+      */
+      // To calculate the width percentage for each bar based on the scores
+
+    </script>
+</body>
+</html>

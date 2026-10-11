@@ -1,0 +1,76 @@
+<!--
+All code is found on W3Schools
+https://www.w3schools.com/howto/howto_css_fullscreen_video.asp
+
+Video belongs to / downloaded from
+https://thelinestudio.com/work/chobani
+-->
+
+<head>
+    <style>
+        /* Style the video: 100% width and height to cover the entire window */
+    #myVideo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        z-index: -1;
+    }
+
+    /* Add some content at the bottom of the video/page */
+    .content {
+        position: fixed;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: #f1f1f1;
+        width: 100%;
+        padding: 20px;
+    }
+
+    /* Style the button used to pause/play the video */
+    #myBtn {
+        width: 200px;
+        font-size: 18px;
+        padding: 10px;
+        border: none;
+        background: #000;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    #myBtn:hover {
+        background: #ddd;
+        color: black;
+    }
+    </style>
+</head>
+
+<!-- The video -->
+<video autoplay muted loop id="myVideo">
+  <source src="DearAlice.mp4" type="video/mp4">
+</video>
+
+<!-- Optional: some overlay text to describe the video -->
+<div class="content">
+  <h1>Motivasjon</h1>
+  <p>Dette er livet du f&aring;r n&aring;r du bare nyter det. F&oslash;lg den gylne regel og ikke sutre over fortiden. Gjort er gjort.</p>
+  <!-- Use a button to pause/play the video with JavaScript -->
+  <button id="myBtn" onclick="myFunction()">Pause</button>
+</div>
+
+<script>
+  var myVideo = document.getElementById("myVideo");
+  var myBtn = document.getElementById("myBtn");
+
+  function myFunction() {
+    if (myVideo.paused) {
+      myVideo.play();
+      myBtn.innerHTML = "Pause";
+    } else {
+      myVideo.pause();
+      myBtn.innerHTML = "Avspill";
+    }
+  }
+</script>

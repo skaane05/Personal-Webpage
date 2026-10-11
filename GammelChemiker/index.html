@@ -1,0 +1,422 @@
+<!-- ======================= scoreboard.html (single dataset; -edit only toggles UI) ======================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ølympiske leker – Scoreboard</title>
+  <link rel="stylesheet" href="../../index.css" />
+  <style>
+    .scoreboard-controls{display:grid;grid-template-columns:1fr;gap:10px;margin:10px 0 20px}
+    .scoreboard-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+    .score-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
+    .score-table th,.score-table td{
+      border-bottom:1px solid rgba(0,0,0,.08);
+      padding:8px;text-align:center;color:#c85c9d;
+    }
+    /* Pink sticky header */
+    .score-table th{position:sticky;top:0;background:#f9b6de;z-index:3}
+
+    /* Zebra rows (light pinks) */
+    .score-table tbody tr:nth-child(odd) td{background:#ffffff}
+    .score-table tbody tr:nth-child(even) td{background:#f6dcea}
+
+    /* Sticky first (Team) and last (Total) columns */
+    .score-table th:first-child,.score-table td:first-child{
+      position:sticky;left:0;z-index:2;background:inherit;box-shadow:2px 0 0 rgba(0,0,0,.04);font-weight:700;
+    }
+    .score-table th:last-child,.score-table td:last-child{
+      position:sticky;right:0;z-index:2;background:inherit;box-shadow:-2px 0 0 rgba(0,0,0,.04);font-weight:700;
+    }
+
+    .pill-btn{border:none;border-radius:14px;padding:8px 12px;background:#fff;color:#c85c9d;cursor:pointer;box-shadow:0 2px 4px rgba(0,0,0,.1);text-decoration:none}
+    .pill-btn:active{transform:translateY(1px)}
+    .inline-input{
+      width:100%;max-width:260px;padding:8px;border-radius:10px;border:none;
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);
+      font-family:'Courier New',Courier,monospace;color:#c85c9d;background:#fff;
+      text-align:center;box-sizing:border-box
+    }
+    td.readonly{pointer-events:none;opacity:.85;cursor:default}
+
+    @media(max-width:480px){
+      .pill-btn{padding:8px 10px}
+      .inline-input{max-width:100%}
+      .score-table th,.score-table td{padding:10px 6px}
+    }
+  </style>
+</head>
+<body class="Website-drikke">
+  <a href="./overview.html" class="back-button"><img src="../../Photos/arrow.png" alt="Back"></a>
+
+  <div class="bodyBox-drikke">
+    <h1 class="h1-drikke">Scoreboard</h1>
+
+    <div class="scoreboard-controls">
+      <!-- Join by game code (always visible) -->
+      <div id="joinRow" style="text-align:center">
+        <input id="gameCodeInput" class="inline-input" type="text" placeholder="Enter game code (lalala)" />
+        <button class="pill-btn" id="joinGameBtn" type="button">Join game</button>
+      </div>
+
+      <p class="tekst-drikke">
+        Create a game: type a new code and press <b>Join game</b>, then share that code with players.
+        To edit and track scores (game master), add <code>-edit</code> to the code, e.g. <b>lalala</b> → <b>lalala-edit</b>.
+      </p>
+
+      <!-- Add team (edit mode only) -->
+      <div id="addRow" style="text-align:center;display:none">
+        <input id="newTeamName" class="inline-input" type="text" placeholder="New team name" />
+        <button class="pill-btn" id="addTeamBtn" type="button">Add team</button>
+      </div>
+
+      <!-- Reset (edit mode only) -->
+      <div id="actionsRow" class="scoreboard-actions" style="display:none">
+        <button class="pill-btn" id="resetScoresBtn" type="button">Reset scores</button>
+        <button class="pill-btn" id="resetPlayersBtn" type="button">Reset players</button>
+      </div>
+
+      <!-- Game selector (edit mode only) -->
+      <div id="gameSelectRow" style="text-align:center;display:none">
+        <div id="gameCheckboxes" style="display:inline-block;text-align:left;max-height:180px;overflow:auto;padding:10px 12px;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1);">
+          <!-- checkboxes injected here -->
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <button class="pill-btn" id="updateGamesBtn" type="button" title="Replace current set with checked games">Update games</button>
+        </div>
+      </div>
+
+
+    <div style="overflow-x:auto;">
+      <table class="score-table" id="scoreTable">
+        <thead>
+          <tr id="scoreHeadRow">
+            <th>Team</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer style="text-align:center;">
+    <p style="font-family:'Courier New'">Made by Ingrid Sutterud (styling by Andreas Skaane)</p>
+    <a href="https://instagram.com/ingridsutterud?igshid=YmMyMTA2M2Y="><img class="insta-ikon" src="../../Photos/insta-ikon.jpg" alt="Instagram icon"></a>
+  </footer>
+
+<script>
+  /* ====== Cloud config ====== */
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyjmKVsGAsIR3jI05kaueH5tfhvTtsKAfAb7R1AQII-OZqRoWTEUHlkZpFHuXDErQst/exec';
+  const POLL_MS = 2500;
+
+  /* ====== URL & modes ====== */
+  const urlParams = new URLSearchParams(location.search);
+  const hasGameParam = urlParams.has('game') && String(urlParams.get('game') || '').trim() !== '';
+
+  // What the user typed (may include -edit); only defined if URL has ?game
+  let RAW_CODE = hasGameParam ? sanitizeGameCode(urlParams.get('game')) : '';
+  let EDIT_MODE = hasGameParam ? RAW_CODE.endsWith('-edit') : false;   // UI only
+  let GAME_ID   = hasGameParam ? baseIdFromRaw(RAW_CODE) : '';         // base id used for storage
+  let PREVIEW_MODE = !hasGameParam;                                     // true when first visit without ?game=
+
+/* ====== Events loader (from events.json) ====== */
+let DEFAULT_EVENTS = [];
+// Use only these three when starting a brand-new game (or preview)
+const STARTER_EVENT_KEYS = ['beer_pong','chandelier','rage_cage'];
+function starterEvents(){
+  return DEFAULT_EVENTS.filter(e => STARTER_EVENT_KEYS.includes(e.key));
+}
+
+async function loadDefaultEvents(){
+  try {
+    const res = await fetch('./events.json', {cache:'no-store'});
+    if (!res.ok) throw new Error('Could not fetch events.json');
+    const arr = await res.json();
+    DEFAULT_EVENTS = arr;
+  } catch (e) {
+    console.error('Falling back to built-in events', e);
+    DEFAULT_EVENTS = [
+      {key:'beer_pong',name:'Beer Pong',points:2},
+      {key:'chandelier',name:'Chandelier',points:2},
+      {key:'rage_cage',name:'Rage Cage',points:2},
+      {key:'chug_suck_flip',name:'Chug–Suck–Flip',points:1},
+      {key:'biathlon',name:'Biathlon',points:3},
+      {key:'flunkyball',name:'Flunkyball',points:3},
+      {key:'beer_relay',name:'Beer Relay',points:2}
+    ];
+  }
+}
+
+let state = null;
+let pollHandle = null;
+let CTX = 0; 
+
+  /* --------- API I/O --------- */
+  async function fetchState() {
+    const res = await fetch(`${API_URL}?game=${encodeURIComponent(GAME_ID)}`, { method:'GET', cache:'no-store' });
+    const data = await res.json();
+
+    // normalize
+    if (!Array.isArray(data.events)) data.events = starterEvents();  // <-- was DEFAULT_EVENTS
+    if (!Array.isArray(data.teams))  data.teams  = [];
+    if (typeof data.results !== 'object' || data.results === null) data.results = {};
+    if (typeof data._rev !== 'number') data._rev = 0;
+
+    return data;
+  }
+
+  async function pushState() {
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+    const myCtx = CTX;
+    await fetch(API_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({ game: GAME_ID, state }) });
+    try {
+      const server = await fetchState();
+      if (myCtx !== CTX) return;    // ignore if we switched games
+      if (server._rev >= state._rev) state = server;
+      renderAll();
+    } catch (_) {}
+  }
+
+  function stopPolling(){
+    if (typeof pollHandle !== 'undefined' && pollHandle) {
+      clearInterval(pollHandle);
+      pollHandle = null;
+    }
+  }
+  function startPolling() {
+    if (PREVIEW_MODE) return;
+    stopPolling();
+    const myCtx = CTX;              // snapshot
+    pollHandle = setInterval(async () => {
+      try {
+        const server = await fetchState();
+        if (myCtx !== CTX) return;  // stale poll, ignore
+        if (server._rev > state._rev) { state = server; renderAll(); }
+      } catch (_) {}
+    }, POLL_MS);
+  }
+
+  /* --------- DOM refs --------- */
+  const scoreHeadRow   = document.getElementById('scoreHeadRow');
+  const scoreBody      = document.getElementById('scoreBody');
+  const newTeamName    = document.getElementById('newTeamName');
+  const addTeamBtn     = document.getElementById('addTeamBtn');
+  const resetScoresBtn = document.getElementById('resetScoresBtn');
+  const gameCodeInput  = document.getElementById('gameCodeInput');
+  const joinGameBtn    = document.getElementById('joinGameBtn');
+  const addRow         = document.getElementById('addRow');
+  const actionsRow     = document.getElementById('actionsRow');
+  const gameSelectRow  = document.getElementById('gameSelectRow');
+  const gameCheckboxes = document.getElementById('gameCheckboxes');
+  const updateGamesBtn = document.getElementById('updateGamesBtn');
+  const resetPlayersBtn = document.getElementById('resetPlayersBtn');
+
+  // Show placeholder if we're in preview (keep empty); otherwise prefill RAW_CODE
+  gameCodeInput.value = PREVIEW_MODE ? '' : RAW_CODE;
+
+  /* --------- Helpers & logic --------- */
+  function uid(){ return Math.random().toString(36).slice(2,9); }
+  function ensureTeamResult(id){ if(!state.results[id]) state.results[id] = {}; }
+  function totalFor(id){ const res = state.results[id] || {}; return state.events.reduce((s,ev)=>s+(res[ev.key]?ev.points:0),0); }
+  function sanitizeGameCode(s){ return String(s||'').trim().toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9_-]/g,''); }
+  function baseIdFromRaw(raw){ return raw.replace(/-edit$/, ''); }
+  function bumpRev(){ state._rev = (typeof state._rev === 'number' ? state._rev : 0) + 1; }
+
+  // Fixed demo dataset for the first visit (looks random, but deterministic)
+  function buildPreviewState(){
+    const events = starterEvents().map(e => ({...e}));
+    const teams  = [{id:'p1',name:'Player 1'},{id:'p2',name:'Player 2'},{id:'p3',name:'Player 3'}];
+    const results = { p1:{}, p2:{}, p3:{} };
+    // Distribute wins so totals differ a bit
+    events.forEach((ev, idx) => {
+      if (idx % 3 === 0) results.p1[ev.key] = true; // 0,3,6...
+      if (idx % 3 === 1) results.p2[ev.key] = true; // 1,4,7...
+      if (idx % 3 === 2) results.p3[ev.key] = true; // 2,5,8...
+    });
+    return { _rev: 0, events, teams, results };
+  }
+
+  function populateGameSelect(){
+    // Render checkboxes based on DEFAULT_EVENTS and current state.events
+    const activeKeys = new Set((state.events || []).map(e => e.key));
+    gameCheckboxes.innerHTML = DEFAULT_EVENTS.map(ev => {
+      const checked = activeKeys.has(ev.key) ? 'checked' : '';
+      return `
+        <label style="display:flex;align-items:center;gap:8px;margin:4px 0;">
+          <input type="checkbox" value="${ev.key}" ${checked}>
+          <span>${ev.name} (${ev.points} pts)</span>
+        </label>
+      `;
+    }).join('');
+  }
+
+  function setUiMode(){
+    const editing = EDIT_MODE && !PREVIEW_MODE;
+    addRow.style.display       = editing ? 'block' : 'none';
+    actionsRow.style.display   = editing ? 'flex'  : 'none';
+    gameSelectRow.style.display= editing ? 'block' : 'none';
+
+    if (editing) populateGameSelect();
+    renderAll();
+  }
+
+
+  async function switchGame(newCode){
+    if (!DEFAULT_EVENTS.length) { try { await loadDefaultEvents(); } catch (_) {} }
+
+    const myCtx = ++CTX;            // <— new context for this game
+
+    RAW_CODE  = sanitizeGameCode(newCode) || 'testgame';
+    EDIT_MODE = RAW_CODE.endsWith('-edit');
+    GAME_ID   = baseIdFromRaw(RAW_CODE);
+    PREVIEW_MODE = false;
+    gameCodeInput.value = RAW_CODE;
+
+    const qs = new URLSearchParams(location.search);
+    qs.set('game', RAW_CODE);
+    history.replaceState(null, '', `${location.pathname}?${qs.toString()}`);
+
+    stopPolling();
+
+    // show clean starter board immediately
+    state = { _rev: 0, events: starterEvents(), teams: [], results: {} };
+    setUiMode();
+
+    try {
+      const server = await fetchState();
+      if (myCtx !== CTX) return;    // ignore stale response
+      const empty = (!server.teams?.length) && (!Object.keys(server.results||{}).length);
+      if (!Array.isArray(server.events) || !server.events.length || empty) {
+        state = { _rev: 0, events: starterEvents(), teams: [], results: {} };
+        if (EDIT_MODE) { await pushState(); }
+      } else {
+        state = server;
+      }
+    } catch (_) {
+      if (myCtx !== CTX) return;
+      state = { _rev: 0, events: starterEvents(), teams: [], results: {} };
+      if (EDIT_MODE) { await pushState(); }
+    }
+
+    populateGameSelect();
+    renderAll();
+    startPolling();
+  }
+
+  async function toggleCell(teamId, eventKey){
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+    ensureTeamResult(teamId);
+    state.results[teamId][eventKey] = !state.results[teamId][eventKey];
+    bumpRev();
+    renderTable();      // instant local
+    await pushState();  // sync
+  }
+
+  async function addTeam(name){
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+    const t = name.trim(); if(!t) return;
+    const team = { id: uid(), name: t };
+    state.teams.push(team);
+    ensureTeamResult(team.id);
+    bumpRev();
+    newTeamName.value = '';
+    renderTable();
+    await pushState();
+  }
+
+  async function resetScores(){
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+    // Keep teams, clear results only
+    const newResults = {};
+    state.teams.forEach(team => { newResults[team.id] = {}; });
+    state.results = newResults;
+    bumpRev();
+    renderAll();
+    await pushState();
+  }
+
+  async function resetPlayers(){
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+
+    state.teams = [];     // remove all teams
+    state.results = {};   // remove all per-team marks
+    bumpRev();
+    renderAll();
+    await pushState();
+  }
+
+  function renderTable(){
+    const eventHeaders = state.events.map(ev =>
+      `<th title="${ev.points} point(s)">${ev.name}<br><span style="font-size:12px">(${ev.points})</span></th>`
+    ).join('');
+    scoreHeadRow.innerHTML = `<th>Team</th>${eventHeaders}<th>Total</th>`;
+
+    scoreBody.innerHTML = '';
+    state.teams.forEach(team => {
+      ensureTeamResult(team.id);
+      const res = state.results[team.id];
+      const total = totalFor(team.id);
+      const cells = state.events.map(ev => {
+        const on = !!res[ev.key];
+        const roClass = (EDIT_MODE && !PREVIEW_MODE) ? '' : 'readonly';
+        const cursor  = (EDIT_MODE && !PREVIEW_MODE) ? 'pointer' : 'default';
+        return `<td class="${roClass}" data-team="${team.id}" data-ev="${ev.key}" style="user-select:none;cursor:${cursor};${on?'filter:brightness(0.9)':''}">${on?'✔':'—'}</td>`;
+      }).join('');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${team.name}</td>${cells}<td>${total}</td>`;
+      scoreBody.appendChild(tr);
+    });
+
+    if (EDIT_MODE && !PREVIEW_MODE) {
+      scoreBody.querySelectorAll('td[data-team]').forEach(td => {
+        td.addEventListener('click', () => toggleCell(td.dataset.team, td.dataset.ev));
+      });
+    }
+  }
+  function renderAll(){ renderTable(); }
+
+  // Wire up
+  joinGameBtn.addEventListener('click', () => switchGame(gameCodeInput.value));
+  gameCodeInput.addEventListener('keydown', e => { if(e.key === 'Enter') switchGame(gameCodeInput.value); });
+  addTeamBtn.addEventListener('click', () => addTeam(newTeamName.value));
+  newTeamName.addEventListener('keydown', e => { if(e.key === 'Enter') addTeam(newTeamName.value); });
+  resetScoresBtn.addEventListener('click', resetScores);
+  resetPlayersBtn.addEventListener('click', resetPlayers);
+
+function readCheckedKeys(){
+  return Array.from(gameCheckboxes.querySelectorAll('input[type="checkbox"]:checked'))
+    .map(i => i.value);
+}
+  updateGamesBtn.addEventListener('click', async () => {
+    if (!EDIT_MODE || PREVIEW_MODE) return;
+    const keys = new Set(readCheckedKeys());
+    state.events = DEFAULT_EVENTS.filter(ev => keys.has(ev.key));
+    bumpRev();
+    renderAll();
+    await pushState();
+    populateGameSelect(); // re-sync checkmarks with saved state
+  });
+
+    (async function init(){
+      const [_, fetched] = await Promise.all([
+        loadDefaultEvents(),
+        PREVIEW_MODE ? null : fetchState().catch(_=>null)
+      ]);
+
+      state = PREVIEW_MODE
+        ? buildPreviewState()
+        : (fetched || { _rev:0, events: starterEvents(), teams:[], results:{} });
+
+      if (!Array.isArray(state.events) || !state.events.length) state.events = starterEvents();
+      if (typeof state._rev !== 'number') state._rev = 0;
+
+      setUiMode();
+      startPolling();
+    })();
+</script>
+
+
+</body>
+</html>

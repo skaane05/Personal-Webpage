@@ -1,0 +1,73 @@
+/*Hei*/
+body {
+    font-family: 'Snell Roundhand', cursive;
+    background-color: white;
+  }
+
+.button-4 {
+            width: 200px;
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+.button-4:hover {
+    background-color: #000;  /* Dark background on hover */
+}
+
+nav {
+    display: block /*Over hverandre*/
+}
+nav ul {
+    display: flex; /*Ved siden av hverandre*/
+    list-style: none;  /* Fjerner standard punkter i <ul> */
+    padding: 0;
+}
+
+nav ul li {
+    margin: 20px; /* Legger litt mellomrom mellom knappene */
+}
+
+nav ul li img {
+    border-color: black;
+    border-radius: 5px;
+}
+nav ul li video {
+    border-color: black; /* Border-farge funker dårlig på videoer */
+    border-radius: 5px;
+}
+
+.meme-wrapper img {
+    max-height: 300px;
+    max-width: 300px;
+    border: 5px solid #000000;
+    position: relative;  /* Viktig for at transform skal flytte bildet uten teleportering */
+    border-radius: 25px;
+    transition: transform 1.8s ease; /* Smooth overgang */
+    transform-origin: center center; /* Rotasjon rundt sentrum */
+    cursor: pointer;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+}
+
+img.animate {
+      position: fixed; /* Nå kan vi flytte det til midten av skjermen */
+      top: calc(50% - 50px); /* HVORFOR TELEPORTERER DEN TIL HØYRE OG NED FØR DEN GJØR ANIMASJONEN AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
+      left: 50%;
+      transform: translate(-50%, -50%) scale(2) rotateY(720deg); /* Dobbelt snurr og forstørrelse rundt Y-aksen (inni skjerm) */
+      z-index: 1000;
+}
+.player {
+    max-width: 70px;
+    max-height: 70px;
+ }

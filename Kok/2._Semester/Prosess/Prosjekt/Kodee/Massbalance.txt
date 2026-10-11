@@ -1,0 +1,75 @@
+import pandas as pd
+from scipy.optimize import root
+
+def WtFracCO2(a):
+    return (44.01*a)/((1+0.7/0.3)*61.084)
+
+# Opplysninger
+w_capture = 0.85
+a_3 = 0.21
+a_4 = 0.47
+wc9 = 1 #vektfraksjon til karbon i strøm 9
+wc8 = 0.7
+w_MEA = 0.3 
+
+# Initialbetingelser
+m1 = 750
+wc1 = 0.09
+wh1 = 0.03
+wn1 = 0.795
+wo1 = 0.085
+
+"""
+The following changes have been made, in order to simulate the equations derived in Chapter 3.2.1
+m3 = m7,
+m3 = m6, 
+m4 = m5,
+
+Consequently
+wc6 = wc3 #This changed is applied to wji for i = [5,6,7] and j = (each element in each stream)
+
+wM9 = 0 # since wc9=1.00
+wh9 = 0 # --//--
+
+#All nitrogen og oksygen goes through til m2 => wo3 = wn3 = wo4 = wn4 =0
+wM1 = 0 #Does not appear until in and after K-1
+wM2 = 0 #Is not sent through stream 2
+
+wh3 = wh4 = 0 # whi is the mass fraction of H2O(g)
+
+"""
+def massebalanser():
+    def likninger(ukjente):
+        m2, m3, m4, m9, wc2, wc3, wc4, wn2, wM3, wM4, wh2, wo2 = ukjente
+
+        return [
+        m2*wc2 + m4*wc4 - (m1*wc1 + m3*wc3), #Absorberer;
+        m4*wM4 - (m3*wM3),
+        m2*wn2 - (m1*wn1),
+        m2*wo2 - (m1*wo1),
+        m2*wh2 - (m1*wh1),
+
+        m3*wc3 + m9*wc9 - (m4*wc4), #Stripper;
+        m3*wM3 - (m4*wM4),
+
+        wc3 + wM3 - 1, #Makes sure that the fractions add up to 1
+        wc4 + wM4 - 1, 
+
+        m2*wc2 - (1-w_capture)*m1*wc1, 
+
+        wc3 - WtFracCO2(a_3),
+        wc4 - WtFracCO2(a_4),
+
+        m4 - (m3 + m9), #m5 = m6 + m9
+        m1 + m3 - (m4 + m2), 
+        ]
+
+    initialgjett = [650, 1500, 1500, 100, 0.05, 0.05, 0.05, 0.8, 0.95, 0.95, 0.05, 0.10]
+
+    solution = root(likninger, initialgjett, method="lm")
+
+    """
+    m9 = m8 uten vann, og m8 inneholder bare vann og CO_2
+    m8*wc8 = m9*wc9 = m9
+    """
+    return solution

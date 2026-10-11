@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>Kok</title>
+    <link rel="icon" type="image/png" href="/Bilder/1576_cooking.png"> 
+    <link href='https://fonts.googleapis.com/css?family=Patrick Hand SC' rel='stylesheet'> 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping */
+            justify-content: center; /* Keep it centered when wrapping */
+            background-color: #423886;
+            color: white; /*Text color*/
+            }
+        .main {
+            display: flex;
+            flex-direction: column; /* Dette tvinger elementene til å stå ved siden av hverandre (vannrett) */
+            align-items: flex-start; /* Sørger for at de starter på toppen */
+            gap: 20px; /* Gir litt luft mellom spillet og karusellen */
+        }
+
+        /* Selve karusell-boksen din */
+        #memecarusel {
+            display: flex;
+            flex-direction: column; /* Beholder denne slik at bilde og knapper stables loddrett */
+            align-items: center;
+            max-width: 300px; /* Juster størrelsen etter ønske */
+        }
+        h1 {
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body lang="no">
+    <ul style="display: flex; flex-direction: column;"> <!-- Gjør at de følgene plasseres ved siden av hverandre-->
+        <div class="main">
+            <div style="display: flex; flex-direction: row; gap: 20px; margin-top: 50px;">
+                <img src="/Bilder/Webkom_logo_hvit.png" style="max-height: 500px; width: auto;">
+                <div id="memecarusel" style="width: fit-content; margin-left: 300px;">
+                    <!-- Bildet som skal vises i karusellen -->
+                    <img id="carouselImage" src="" alt="Meme" style="max-height: 400px; width: auto;">
+                </div>
+            </div>
+            <h1 style="color: white;">Webkom har opptak!</h1>
+            <div style="display: flex; flex-direction: column;">
+            <h1 style="color: white;">Send mail til webkom@hc.ntnu.no innen s&oslash;ndag 27. september!</h1>
+            </div>
+        </div>
+
+    </ul>
+
+    <script>
+        let startTime = Date.now();
+    </script>
+
+    <script>
+        /* Bildekarusell for Yatzy-spillet */
+        const carouselContainer = document.getElementById("memecarusel");
+        const carouselImage = document.getElementById("carouselImage");
+
+        const playlist = [
+            "/Bilder/WebMemes/1000023185.jpg",
+            "/Bilder/WebMemes/1000023186.jpg",
+            "/Bilder/WebMemes/1000023187.jpg",
+            "/Bilder/WebMemes/1000023188.jpg",
+            "/Bilder/WebMemes/1000023189.jpg",
+            "/Bilder/WebMemes/1000023190.jpg",
+            "/Bilder/WebMemes/1000023191.jpg",
+            "/Bilder/WebMemes/1000023192.jpg",
+            "/Bilder/WebMemes/b1bgud.jpg",
+            "/Bilder/WebMemes/Webkomimportant.png",
+            "/Bilder/WebMemes/Skjermbilde 2026-09-17 112858.png",
+            "/Bilder/WebMemes/Skjermbilde 2026-09-17 102106.png",
+
+        ];
+
+        // Starter på et tilfeldig bilde fra listen
+        let currentMeme = Math.floor(Math.random() * playlist.length);
+        let carouselInterval;
+        let isPaused = false;
+
+        // Viser det gjeldende bildet i karusellen
+        function displayMeme() {
+            carouselImage.src = playlist[currentMeme];
+            updateStatus();
+        }
+
+        // Starter den automatiske timeren (10 sekunder)
+        function startCarousel() {
+            isPaused = false;
+            carouselInterval = setInterval(nextMeme, 5000); // 10000 ms = 10 sekunder
+        }
+
+        // Stopper den automatiske timeren
+        function pauseCarousel() {
+            isPaused = true;
+            clearInterval(carouselInterval);
+        }
+
+        // Oppdaterer statusikoner og konsoll-logg
+        function updateStatus() {
+            console.log("Karusell-status: " + (isPaused ? "pauset" : "spiller"));
+            const toggleButton = document.getElementById("toggleplayButton");
+            
+            if (toggleButton) {
+                if (isPaused) {
+                    toggleButton.src = "/Bilder/NoSound.svg"; // Viser pauset-ikon
+                } else {
+                    toggleButton.src = "/Bilder/PlayingSong.svg"; // Viser spiller-ikon
+                    console.log("Viser bilde: " + playlist[currentMeme]);
+                }
+            }
+        }
+
+        // Går til neste bilde (looper tilbake til start hvis man når slutten)
+        function nextMeme() {
+            currentMeme = (currentMeme + 1) % playlist.length;
+            displayMeme();
+        }
+
+        // Koblet til play/pause-knappen din
+        function togglePlay() {
+            if (isPaused) {
+                startCarousel();
+                displayMeme(); // Viser neste med en gang når du starter
+            } else {
+                pauseCarousel();
+                updateStatus();
+            }
+        }
+
+        // Koblet til "neste"-knappen din
+        function nextSong() {
+            // Nullstiller timeren så bildet står i 10 nye sekunder etter et manuelt klikk
+            clearInterval(carouselInterval); 
+            nextMeme();
+            if (!isPaused) {
+                startCarousel();
+            }
+        }
+
+        // Starter karusellen automatisk når siden lastes inn
+        window.onload = function () {
+            displayMeme();
+            startCarousel();
+        };
+    </script>
+</body>
+</html>

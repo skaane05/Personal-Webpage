@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+
+# Defining values of alpha, not including 0.5 to avert from division by zero
+x = np.linspace(0.3, 0.49, 100)
+
+
+Temperatures = np.array([273, 298, 313, 333, 353, 373, 393, 423])
+K_2_values = np.array([3.93e5, 3.70e4, 1.14e4, 2.43e3, 5.78e2, 2.46e2, 4.08e1, 6.74])
+
+# Definer funksjonen for Henry's konstant
+def K_H(T, a):
+    c1, c2, c3, c4, c5 = 4.966563e2, 3.41697e5, 1.169131, 1.47225, 1.28338
+    return (c1 + c2 * a / T) * np.exp(c3 * a**2 + c4 / T + c5 * a / (T**2))
+
+# Beregn og plott p_CO2 for hver temperatur
+plt.figure(figsize=(10, 6))
+for i in range(len(Temperatures)):
+    T = Temperatures[i]
+    K = K_2_values[i]
+    p_CO2 = ((K_H(T, x) * x**2) / (K * (1 - 2*x)**2)) / 100  # Enhet: bar
+    plt.plot(x, p_CO2, label=f"T = {T} K")
+
+# Tegn asymptoten ved alpha = 0.5
+plt.axvline(x=0.5, color="red", linestyle="dashed", label=r"Asymptote at $\alpha=0.5$")
+
+# Plotter
+plt.xlabel(r"$\alpha$")
+plt.ylabel(r"$p(CO_2)$ [bar]")
+plt.title(r"Plot av $p(CO_2)$ som funksjon av $\alpha$")
+plt.legend()
+plt.grid(True)
+plt.show()

@@ -1,0 +1,427 @@
+<html lang="no">
+<head>
+    <link rel="icon" type="image/png" href="/Bilder/8213301.png"> 
+    <title>Andrhska</title>
+    <link rel="stylesheet" href="/CSS/style_mainpage.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script> <!-- Tror man trenger bare en per nettside, men jeg hra lagd den til i hver eneste html fil (idk i guess det funnker)-->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style>
+        text {
+            font-size: 120px !important; /* Skaleres med rect text textlength | omtrent 1:5 forhold ser fin ut på andrhska sin PC */
+        }
+        svg { /* Hindre kollaps på mindre skjermer */
+            width: 100%;
+            height: auto;
+        }
+        .cutout-bg {
+            fill: white;
+            transition: fill 0.3s ease;
+        }
+
+        svg:hover .cutout-bg {
+            fill: #ec3b82; /* for gradient farge i svg må man bruke html tricks ikke css gradient coloring */
+        }
+
+        .memes-bg {
+            /*--bg-color: #6Fc276;
+            fill: var(--bg-color);*/
+            fill: white;
+            transition: fill 0.3s ease;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important; /* Vil ha Comic Sans men idc */
+        }
+        svg:hover .memes-bg {
+            fill: #fcf900; /* for gradient farge i svg må man bruke html tricks ikke css gradient coloring */
+        }
+        
+        #rotated-text {
+            font-size: 70px !important; /* Skaleres med rect text textlength | omtrent 1:5 forhold ser fin ut på andrhska sin PC */
+        }
+
+    </style>
+</head>
+<body>
+    <audio id="myAudio"> <!-- Audio element for playing music -- At the Top to load music quick -->
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+<div class="welcome layout-box">
+    <div class="container version-a">
+        <div class="images">
+            <div class="grid image-grid-3-m4">
+                <img class="image-0 " src="/Bilder/Snapchat-405308297.jpg"> 
+                <img class="image-1" src="/Bilder/yatzy-king.png" style="object-fit: contain;"> <!-- border-radius 50% gir sirkel cutout -->                
+                <img class="image-2 "src="/Bilder/Webkom_logo_svart.png" style="object-fit: contain;"> <!-- Object-fit: contain; betyr at hele bildet skal vises inni <img> -->
+                <img class="image-3 " src="/Bilder/Snapchat-1336223181.jpg"> <!-- Does not appear until phone-sized screen-->
+            </div>
+        </div>
+        <div class="numbering">
+            <div class="numbering-box noHover">
+                <div class="numbering-no-wrapper"><span class="numbering-no-text">Andrhska.</span></div>
+                <div class="numbering-text-text">Velkommen</div>
+            </div>
+        </div>
+        <div class="text">
+            <h2>NB!</h2>
+            <p>Nettside er under konstruksjon, 
+                forventet ferdig; F&oslash;r Vinterblotet 2028. Forventer new review av Perrur. Dette er noe av det jeg (vil) tilbyr;</p>
+            <p>Yatzy, Kok, Memes, Review av folkesider og Tips & Triks til &aring; lage folkesider!</p>
+        </div>
+
+        <div class="single-image">
+            <div class="image-5">
+                <div class="shader">
+                    <img src="https://assets.codepen.io/2153413/sparrow-base.png" alt="Silhouette design of a sparrow sitting on a branch" width="512">
+                    <div class="shader-layer specular gradient-sparrow">
+                        <img class="shader-layer mask" src="https://assets.codepen.io/2153413/sparrow-mask.png" alt="" width="300">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="news layout-box">
+    <div class="container version-b">
+        <div class="images">
+            <div class="grid image-grid-4">
+                  <img class="image-0 " src="/Bilder/Fluffy_cow.jpg"> 
+                  <img class="image-1" src="Bilder/jurassic-park-ah.gif">
+                  <img class="image-2 " src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnZ_geVJWucVX1SG9aGud8F7dbVBuJoZXidGkCLlpiRg&s=10">
+                  <img class="image-3 " src="Bilder/Fluffy_cow.jpg">
+               </div>
+        </div>
+        <div class="numbering">
+            <div class="numbering-box ">
+                <div class="numbering-no-wrapper"><span class="numbering-no-text">Nyheter</span></div>
+                <div class="numbering-text-text">Hva skjer?</div>
+            </div>
+        </div>
+        <div class="text">
+            <button class="button-33" role="button" onclick="togglePlay()">Nyheter</button>
+        </div>
+        <div class="single-image"></div>
+    </div>
+</div>
+<div class="kitchen layout-box">
+    <div class="container version-b">
+        <div class="images">
+            <div class="grid image-grid-4">
+                <img class="image-0 " src="/Bilder/Screenshot_20251025_170759_TikTok.jpg">
+                <img class="image-1" src="/Bilder/AC_logo_svart.png">
+                <img class="image-2 " src="/Bilder/20250705_000159.jpg"> <!-- Ønsker at det skal være en live ledertavle av fri yatzy-->
+                <img class="image-3 " src="">
+            </div>
+        </div>
+        <div class="numbering">
+            <a href="Kok/"> <!-- /Kok/ er identisk med Kok/ tror jeg -->
+                <div class="numbering-box ">
+                    <div class="numbering-no-wrapper"><span class="numbering-no-text">&Oslash;ving?</span></div>
+                    <div class="numbering-text-text">Kok</div>
+                </div>
+            </a>
+        </div>
+        <div class="text">
+            <h2>Heads up...</h2>
+            <p>Uorganisk f&aring;r du fra Maya, Matte fra Hannah. Jeg er mer for f2f hjelp -- men jeg har noe. Dette er gamle kjemikere's fors&oslash;k p&aring; suksess.</p>
+            <p>For all del, pr&oslash;v selv. Sp&oslash;r studass.</p>
+        </div>
+        <div class="single-image"></div>
+    </div>
+</div>
+<div class="games layout-box">
+    <div class="container version-a">
+        <div class="images">
+            <div class="grid image-grid-3-m4">
+                <img class="image-1 " src="/Bilder/yippy_yatzy.jpg" style="object-fit: contain;" onclick="yatzy()" style="cursor: pointer;">
+            </div>
+        </div>
+        <div class="numbering">
+            <div>
+                <a href="/Spill/">
+                    <svg viewBox="0 0 800 300" class="cutout" style="z-index: 50;" preserveAspectRatio="xMidYMid meet"> <!-- SVG untis for veiwbox size, 800 bredde og 300 høyde - de to første er koordinater i div -->
+                        <defs>
+                        <mask id="text-mask" > <!-- Important on mobile (?): maskUnits="userSpaceOnUse"  maskContentUnits="userSpaceOnUse" -->
+                            <!-- Hvit = synlig -->
+                            <rect width="100%" height="100%" fill="white" />
+
+                            <!-- Svart = hull, x&y = posisjon i box, 50&50 = sentrum -->
+                            <text
+                                x="400"
+                                y="150"
+                                text-anchor="middle"
+                                dominant-baseline="middle"
+                                font-size="200"
+                                textLength="610"
+                                lengthAdjust="spacing"
+                                font-weight="900"
+                                fill="black"
+                            >
+                            SpillArkaden!
+                            </text>
+                        </mask>
+                        </defs>
+
+                        <!-- Selve boksen -->
+                        <rect
+                            class="cutout-bg"
+                            width="100%"
+                            height="100%"
+                            fill="white"
+                            mask="url(#text-mask)"
+                        />
+                    </svg>
+                    <!--
+                    -->
+                </a>
+            </div>
+        </div>
+        <div class="text">
+            <h2>Spill!</h2>
+            <p>Trykk på bilde til høyre for Yatzy, eller trykk på "SpillArkaden" og se flere!</p>
+            <p>Yatzy, Sudoku, Piano</p>
+        </div>
+        <div class="single-image">
+            <img class="image-5 " src="/Bilder/Digidalje_websjaepH_jx9BVTr.png" style="object-fit: contain;"> 
+        </div>
+    </div>
+</div>
+<div class="howto layout-box">
+    <div class="container version-b">
+        <div class="images">
+            <div class="grid image-grid-4">
+                <div class="image-0" > <!-- bruker transform fordi object fit funket ikke da jeg prøvde-->
+                    <div class="shader"> <!-- Was "shader framed"-->
+                        <img src="https://assets.codepen.io/2153413/beetle-base.png" alt="A chromatic green beetle on a brown leaf" width="200">
+                        <div class="shader-layer specular gradient-beetle">
+                            <img class="shader-layer mask" src="https://assets.codepen.io/2153413/beetle-mask.png" alt="" width="200">
+                        </div>
+                    </div>
+                </div>
+                <div class="image-2" style="display: flex; flex-direction: row;">
+                    <div class="shader">
+                        <img src="https://assets.codepen.io/2153413/sparrow-base.png" alt="Silhouette design of a sparrow sitting on a branch" width="512">
+                        <div class="shader-layer specular gradient-sparrow">
+                            <img class="shader-layer mask" src="https://assets.codepen.io/2153413/sparrow-mask.png" alt="" width="300">
+                        </div>
+                    </div>
+                    <div>
+                        <img src="/Bilder/HowToFolkesideMeme.png" style="object-fit: fill;">
+                    </div>
+                </div>
+                <div class="image-3">
+                     <div class="shader" style="object-fit: contain;"> <!-- Was "shader" -->
+                        <img src="/Bilder/Webkom_logo_svart.png" alt="Webkomiteens logo" style="transform: scale(50%, 50%);">
+                        <div class="shader-layer specular gradient-webkom">
+                            <img class="shader-layer mask" src="Bilder/Webkom_logo_Gul.png" alt="">
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="numbering">
+            <div class="numbering-box ">
+                <div class="numbering-no-wrapper"><span class="numbering-no-text">How-To-</span></div>
+                <div class="numbering-text-text">Folkeside</div>
+            </div>
+        </div>
+        <div class="text">
+            <h2>24/7</h2>
+            <p>Tips og Tricks til folkesidekoding! </p>
+            <p>HTF er under prioritert utvikling</p>
+        </div>
+    </div>
+</div>
+<div class="codereview layout-box">
+    <div class="container version-b">
+        <div class="images">
+            <div class="grid image-grid-4">
+                <img class="image-0 " src="/Bilder/rating-scale.png" style="object-fit: scale-down;">
+                <img class="image-1" src="https://media.tenor.com/a1UmJtACTtAAAAAe/gem-al.png" style="object-fit: scale-down;">
+                <img class="image-2 " src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/14302/production/_89509628_istock_000067457221_medium.jpg"> <!-- Ønsker at det skal være en live ledertavle av fri yatzy-->
+                <img class="image-3 " src="">
+            </div>
+        </div>
+
+        <div class="numbering">
+            <div class="numbering-box ">
+                <div class="numbering-no-wrapper"><span class="numbering-no-text">Koksider...</span></div>
+                <div class="numbering-text-text">CodeReview!</div>
+            </div>
+        </div>
+        <div class="text">
+            <h2>24/7</h2>
+            <p>Her kommer review av folkesiders kode. Inspo fra perrur</p>
+            <p>Kopierbarhet; Orginalitet, Kreativitet, Vakkerhet</p>
+        </div>
+    </div>
+</div>
+<div class="memes layout-box">
+    <div class="container version-a">
+        <div class="images">
+            <div class="grid image-grid-3-m4">
+                <!--<img class="image-0 " src="/Bilder/walterPipette.mp4" style="object-fit: fill;">-->
+                <video autoplay muted loop id="myVideo" class="image-0" style="object-fit: fill;">
+                    <source src="/Videoer/walterPipette.mp4" type="video/mp4">
+                </video>
+                <img class="image-1" src="/Bilder/shakespeare.png" style="object-fit: fill;">
+                <img class="image-2 " src="/Bilder/yippy_yatzy.jpg" style="object-fit: fill;">
+                <img class="image-3 " src="/Bilder/nestledermemes.png" style="object-fit: contain;">
+            </div>
+        </div>
+        <div class="numbering">
+            <div>
+                <a href="/Memes/" style="display: block;">
+                    <svg viewBox="0 0 800 300" style="z-index: 50; font-family: 'Ranade', sans-serif;" preserveAspectRatio="xMidYMid meet"> <!-- SVG untis for veiwbox size, 800 bredde og 300 høyde - de to første er koordinater i div -->
+                        <defs>
+                        <mask id="text-mask-memes" > <!-- Important on mobile (?): maskUnits="userSpaceOnUse"  maskContentUnits="userSpaceOnUse" -->
+                            <!-- Hvit = synlig -->
+                            <rect width="100%" height="100%" fill="white" />
+
+                            <!-- Svart = hull, x&y = posisjon i box, 50&50 = sentrum, transform = roterer koordinataksene, font-size blir important valg i style i head i denne html for "Latter"; se id.-->
+                            <text
+                                x="-100"
+                                y="100"
+                                text-anchor="middle"
+                                dominant-baseline="middle"
+                                textLength="200"
+                                lengthAdjust="spacing"
+                                font-weight="900"
+                                fill="black"
+                                transform="rotate(-90 20 20)" 
+                                id ="rotated-text"
+                            >
+                            Latter?
+                            </text>
+                            <text
+                                x="500"
+                                y="175"
+                                text-anchor="middle"
+                                dominant-baseline="middle"
+                                font-size="200"
+                                textLength="510"
+                                lengthAdjust="spacing"
+                                font-weight="900"
+                                fill="black"
+                            >
+                            Memes!
+                            </text>
+                        </mask>
+                        </defs>
+
+                        <!-- Selve boksen -->
+                        <rect
+                            class="memes-bg"
+                            width="100%"
+                            height="100%"
+                            fill="white"
+                            mask="url(#text-mask-memes)"
+                        />
+                    </svg>
+                    <!--
+                    -->
+                </a>
+            </div>
+        </div>
+        <div class="text"> <!-- rgb(rød, grønn, blå, opacity) -->
+            <h2 style="padding: 10px; background-color: rgba(242, 17, 17, 0.8);">MMmV</h2>
+            <p style="padding: 20px; background-color: rgb(108, 242, 118, 0.8);">Lorem ipsum dolor sit amet , s&oslash;k op "https://www.youtube.com/watch?v=uuBETyA_yxc". </p>
+            <p style="padding: 20px; background-color: rgba(14, 25, 231, 0.8); border-radius: 50%; text-align: center;">ye</p>
+        </div>
+        <div class="single-image">
+            <img class="image-5 " src="/Bilder/rookienumbersMemes.jpg" style="object-fit: contain;"> 
+        </div>
+    </div>
+</div>
+        
+<div class="contact layout-box">
+    <div class="container version-b">
+        <div class="images">
+            <div class="grid image-grid-4">
+                <img class="image-0 " src="/Bilder/Fluffy_cow.jpg"> 
+                <img class="image-1 "src="https://images.unsplash.com/photo-1482878603463-6092a522e6e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80">
+                <img class="image-2 " src="https://images.unsplash.com/photo-1443926818681-717d074a57af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80">
+                <img class="image-3" src="/Bilder/AC_logo_svart.png" style="object-fit: contain;">
+            </div>
+        </div>
+        <div class="numbering">
+            <div class="numbering-box ">
+                <div class="numbering-no-wrapper"><span class="numbering-no-text">Hjelp?</span></div>
+                <div class="numbering-text-text">Kontakt meg</div>
+            </div>
+        </div>
+        <div class="text">
+            <h2>24/7</h2>
+            <p>Mitt tlf-nummer finner du i klassekatalogen til HC om du &oslash;nsker det. </p>
+            <p>ICE; BEARS, FOXES, SNOW</p>
+        </div>
+        <div class="single-image"></div>
+    </div>
+</div>
+    <script>
+        function yatzy() {
+            window.location.href = "/Spill/Fri-Yatzy/index.html";
+        }
+
+        document.querySelectorAll('.meme-wrapper img').forEach(img => {
+            img.addEventListener('click', () => {
+                img.classList.toggle('animate');
+            });
+        });
+
+        const audio = document.getElementById("myAudio");
+        const audioSource = document.getElementById("audioSource");
+
+        const playlist = [
+            "/Audio/mixdown-nrk-nyheter-themesvignett-dagsrevyen--oddasat.mp3",
+        ];
+
+        let currentSong = Math.floor(Math.random() * playlist.length);
+
+        function playCurrentSong() {
+            audioSource.src = playlist[currentSong]; // Need this before audio.load() is used
+            audio.load();
+            audio.play();
+        }
+
+        function updateStatus() {
+            console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+            if (audio.paused) {
+            } else {
+                console.log("Playing song: " + playlist[currentSong]);
+            }
+        }
+
+         // Toggle play/pause for the audio element when the image is clicked
+        function togglePlay() {
+            // Hvis audio er på, så pause
+            if (audio.paused) {
+                playCurrentSong();
+            }
+        }
+        
+        // Gjør klar til å spille neste 
+        audio.onended = function () {
+            currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+            //playCurrentSong();
+        };
+
+        audio.onplay = updateStatus;
+        audio.onpause = updateStatus;
+
+        // Auto-start musikk ved lasting av siden
+        
+        window.onload = function () {
+            audioSource.src = playlist[currentSong];
+            audio.load(); // Instead of autostarting music, it loads music, ready to be played
+        }; 
+    </script> 
+</body>
+</html>

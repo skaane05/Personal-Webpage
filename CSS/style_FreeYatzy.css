@@ -1,0 +1,327 @@
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 20px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping */
+    justify-content: center; /* Keep it centered when wrapping */
+    background-image: url('/Bilder/yippy_yatzy.jpg'); /* Path to your background image */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover; /* Better handling of aspect ratio */
+    background-position: bottom; /* Position the image such that the bottom is visible, cropping the top */
+}
+@media (max-width: 768px) {/*Jeg vet ikke om denne egt gjør noe, jeg har fokusert på den på linje 54 og glemt denne! */ 
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Valgfritt: sentrer innhold horisontalt */
+        gap: 20px; /* Valgfritt: avstand mellom elementene */
+    }
+}
+
+/* Mobilvisning/Høyde er større enn bredde */
+@media (orientation: portrait) { /*Jeg vet ikke om denne egt gjør noe*/
+    body {
+        margin: 0;
+        overflow: hidden; /* hindrer scrolling */
+        flex-direction: row; /* Vertikal display av ledertavler*/
+        display: flex;
+        min-height: 100vh;   
+        /*background: black url("rotateyourphone.jpg") no-repeat center center; /* Bruker en annen bakgrunn for mobilvisning */
+        background-size: cover;
+    }
+    /* 
+    .dice-button-container,
+    .dice-container,
+    .die,
+    .button-container,
+    button,
+    .button,
+    p,
+    .ledertavle-ramme,
+    .oppgaver-ramme {
+        display: none !important;; /* Skjuler disse elementene under animasjon
+    }
+    */
+}
+
+ul { /*Oppgavene og ledertavlene, ledertavlene går under "right-align" i tillegg */
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start; /* Start fra venstre */
+    align-items: flex-start;
+    flex-wrap: wrap; /* Tillater at de brytes til ny linje hvis det ikke er plass */
+}
+.left, .center, .right {
+    min-width: 100px; /* Prevent shrinking too small */
+}
+.bottom { margin-bottom: 20px;}
+
+@media (max-width: 768px) and (orientation: portrait) { /* For mobiltelefoner som står og IKKE ligger*/
+    .rules-box {
+        width: 95vw !important; /* 95% av skjermens bredde? */
+        max-width: 350px !important;
+        padding: 8px;
+        margin: 6px auto;
+    }
+    .rule-paragraph {
+        width: 100% !important;
+    }
+    ul {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 0;
+    }
+    .oppgaver-ramme,
+    .right-align {
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 350px !important;
+        position: relative !important;
+    }
+    .right-align {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        margin-bottom: 200px !important; /* Adds empty space below, so you can se the entire leaderboard (the margin is ment for the dice-button-container to fall in) */
+    }
+    .dice-button-container {
+        bottom: 6.9% !important; /* Litt for langt nede egt, men for å se hele top 10 i ledertavlen, må den nesten være såpass */
+    }
+    body {
+        overflow-y: auto !important;
+        flex-direction: column !important;
+        min-height: 100vh !important; /*vh stands for viewport height. 1vh is equal to 1% of the height of the browser's visible area (the viewport).
+        Example: If the viewport is 800px tall, 50vh is 400px.*/
+    }
+}
+
+.rules-box {
+    background-color: rgba(255, 255, 255, 0.9); /* Lett gjennomskinnelig hvit */
+    border: 2px solid #ccc;
+    padding: 15px;
+    border-radius: 10px;
+    width: 600px; /* Juster bredde etter behov */
+    /*max-width: 600px;*/
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gir litt dybde */
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    color: #333;
+    
+}
+.rule-paragraph {
+    text-align: left; 
+    width: 600px;
+}
+
+.dice-button-container { /*Container for terningene og knappene*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row; /* Sette knappene til høyre for terningene når skjerm er stor - media query lenger ned*/
+    gap: 20px;
+    margin-right: 20px; /* Avstand til knappene til høyre (går under om skjerm under 1300px width (se lenger ned for media query)*/
+    position: fixed; /* EXPLAINATION INTENDED*/
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 15%; /* Positions it close to the bottom */
+}
+.dice-container { /* Den hvite boksen terningene er i*/
+    display: flex;
+    flex-direction: row; /* Horisontal stabling */
+    justify-content: center;
+    background-color: aliceblue;
+    border-color: transparent; /* Transparent border */
+    border-width: 5px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px; /* Litt padding for å gi plass rundt terningene */
+}
+.button-container { /*Rullterninger og Nullstill spill & Audio-knapper */
+    display: flex;
+    flex-direction: row; /* Horisontal stabling */
+    align-items: center;
+    gap: 10px;
+}
+
+.die { /* Utseende til en "terning"*/
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    color: transparent; /* To not show text - text & dice-value is for console.log - se script.js*/
+    text-shadow: none;
+    user-select: none;
+    text-align: center;
+    background-image: url('/Bilder/Fri_Yatzy/33756_mario_question_icon.png'); /* Bruker et spørsmålstegn som bakgrunnsbilde */
+    background-size: cover; /* Fyller hele terningen */
+    background-position: center; /* Sentrerer bildet */
+    background-repeat: no-repeat; /* Hindrer gjentakelse av bildet */
+}
+
+.dice-container.unclickable {
+    background: rgba(126, 214, 252, 0.9); /* Semi-transparent overlay */
+    border-color: red; /* Rød kant for å indikere at den er låst */
+    cursor: default;    /* Viktig: overskriver pointer */
+    pointer-events: none;   /* Gjør den faktisk ikke-klikkbar */
+}
+
+.button { /*Class = "button" */
+    position: center;
+    top: 20px;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding: 10px 20px;
+    background-color: #f9cf00; /* Lys gul bakgrunn */
+    color: rgb(1, 1, 1); /* Svart tekst */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'Snell Roundhand', cursive;
+}
+
+button { /*<button></button>*/
+    padding: 5px 10px;
+    background-color: #f9cf00;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Snell Roundhand', cursive;
+}
+
+.lagre-poeng {
+    font-family: 'Snell Roundhand', cursive; /* As you can see, this is a useless classs - but a great group-id-element something! */
+    /* Does not do anything since button already has that font-family*/
+}
+
+.scores {display: table; justify-content: center; margin: 20px;}
+table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    padding: 5px;
+    border: 1px solid #000000;
+    text-align: center;
+}
+
+th {
+    background-color: transparent;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: transparent;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: transparent;
+}
+#leaderboard-table {
+    overflow-x: auto;
+    display: block;
+}
+#leaderboard-table th, 
+#leaderboard-table td {
+    background-color: transparent; /* Gjennomsiktig bakgrunn */
+    border-top: none;/* Svart linje på toppen */
+    border-bottom: 1px solid black; /* Svart linje på bunnen */
+    border-left: none; /* Ingen linje på venstre side */
+    border-right: none; /* Ingen linje på høyre side */
+    padding: 8px; /* Litt luft rundt teksten */
+    text-align: center; /* Sentrer tekst */
+}
+.leaderboard-table { width: 80%; margin: auto; }
+.ledertavle-ramme { /*Ledertavlen*/
+    border: 15px; 
+    border-radius: 15px; 
+    padding: 10px;
+    margin: 0;
+    background: linear-gradient(to bottom left, #ff4d4d, #ffcccc); /* Kanskje noe mørkere? */
+    position: relative;
+    top: 10px;
+    right: 10px; 
+    height: auto; /* Ensure it adjusts to content size */
+    max-height: 700px;
+}
+.right-align {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end; /*skyver alt til høyre*/
+    position: absolute;
+    right: 0;
+}
+.oppgaver-ramme {
+        border: 15px;
+        border-radius: 15px; 
+        padding: 10px;
+        background-color: rgb(233, 231, 231); 
+        position: absolute; 
+        margin-top: 20px; 
+        left: 20px;
+        margin: 10px;
+        height: auto;
+        width: auto;
+}
+
+.regel-ramme {
+    background-color: #f1f1f1;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+
+@media (max-width: 1300px) { /*If screen really small, then move shit, NO overlap. Yes yes affects every <div> - very goofy */
+    #pauseMusic {
+        display: block;
+        flex: 1 1 100%;
+        margin: 5px;
+        transform: translate(90%); /*Move 90% to the right (whatever that means)*/
+    }
+    #playMusic {
+        display: block;
+        flex: 1 1 100%;
+        margin: 5px;
+        transform: translate(60%); /*Move 90% to the right (whatever that means)*/
+    }
+    #statusText {
+        transform: translate(50%);
+    }
+    .dice-button-container {
+        display: flex;
+        flex-direction: column; /* Stabler terningene over knappene */
+    }
+    .dice-container {
+        margin-bottom: 10px;
+    }
+    .right-align {
+        margin: 20px;
+        display: block;
+        position: absolute;
+        right: 2%;
+    }
+    .ledertavle-ramme {
+        margin: 10px;
+        position: relative;        
+    }
+}
+
+.fancy-buttons {
+    display: flex; /* Viser knappene på PC */
+    flex-direction: row; /* Stabler knappene horisontalt */
+    gap: 10px; /* Avstand mellom knappene */
+}

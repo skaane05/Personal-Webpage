@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gameshow!</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style>
+        .blink_me {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        body {
+            font-family: "Press Start 2P", cursive;
+            text-shadow: -1px 0 0 #fdff2a, -3px 0 0 #df4a42, 1px 0 0 #91fcfe,
+		3px 0 0 #4405fc;
+            margin: 0;
+            /*background: radial-gradient(circle at center, #b259ff 0%, #3a185c 100%);*/
+            color: white;
+            padding: 40px 20px;
+            background-image: url('/Bilder/arcade.jpg'); 
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover; /*Use contain if picture is much bigger than pc-screen *AND has the correct ratio obvi, because cover focuses on ratio while contain focuses on getting the entire picture in frame*/
+            background-position: center; /* Crops the top rather than the bottom if the picture is too big*/
+            display: block
+        }
+                
+        /* Custom scrollbar for scroll-container */
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #b259ff #3a185c;
+        }
+        .scroll-container::-webkit-scrollbar {
+            height: 12px;
+            background: #3a185c;
+            border-radius: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #b259ff 60%, #792cdf 100%);
+            border-radius: 8px;
+            border: 2px solid #3a185c;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background: #3a185c;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 40px;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 40px;
+        }
+
+        .game-board {
+            flex: 0 0 90%;
+            scroll-snap-align: center;
+            background-color: rgb(58 24 92 / 0.7); /* 40% opacity */
+            border-radius: 20px;
+            padding: 30px;
+            min-width: 320px;
+            max-width: 400px;
+            min-height: 350px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            width: 100%;
+            aspect-ratio: 4 / 3; /* Maintain consistent shape, e.g., 4:3 or 16:9 */
+            background-image: url('/Bilder/Tvungen-Yatzy-Logo.png'); /* Default background image for button*/
+            background-size: contain; /* Show the whole image */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            border-radius: 20px;
+            cursor: pointer; /* Mus endrer seg for å vise klikkbarhet*/
+            border: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @font-face {
+            font-family: 'Press Start 2P';
+            font-style: normal;
+            font-weight: 400;
+            src: url(https://fonts.gstatic.com/s/pressstart2p/v14/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2) format('woff2');
+        } 
+
+    </style>
+</head>
+<body>
+    <img src="/Bilder/arrowhead_3680130.png" class="blink_me blinker" style="transform: scale(1.5) rotate(180deg); cursor: pointer;" onclick="window.history.go(-1); return false;" type="submit">
+    <h1>Bla igjennom og velg et spill!</h1>
+    <h3 style="text-align: center;font-family: 'Press Start 2P', cursive;">Vit at min livsglede bygger på at dere sender inn poengsummer :D</h3>
+    <div style="right: 0%; bottom: 0%;" display="block">
+        <audio id="myAudio">
+                <source id="audioSource" src="" type="audio/mpeg">
+        </audio>
+        <!--
+        <div>
+            <button onclick="playAudio()" id="playMusic">Spill musikk</button> 
+            <button onclick="pauseAudio()" id="pauseMusic">Pause</button>
+        </div>
+        <p id="statusText" style = "color: black;">Audio is paused.</p>
+        -->
+    </div>
+    <div class="scroll-container">
+        <div class="game-board">
+            <div class="game-title">Ledertavler</div>
+            <button class="button" role="button" onclick="location.href='POTS/'" style="background-image: url(/Bilder/Podium.png);"></button>
+        </div>
+        <div class="game-board">
+            <div class="game-title">Fri Yatzy</div>
+            <button class="button" role="button" onclick="location.href='Fri-Yatzy/'" style="background-image: url(/Bilder/Fri-Yatzy-Logo.png);"></button>
+        </div>
+        <div class="game-board">
+            <div class="game-title">Code Review!</div>
+            <button class="button" role="button" style="background-image: url(/Bilder/brainScan.png);" onclick="location.href='CodeReview/'"></button>
+        </div>
+        <div class="game-board">
+            <div class="game-title">Sudoku</div> <!-- SUDOKU -->
+            <button class="button" role="button" style="background-image: url(/Bilder/Sudoku.png);" onclick="location.href='Sudoku/'"></button>
+        </div>
+        <div class="game-board">
+            <div class="game-title">Vestlandets Kortspill!</div> <!-- Run To Nine -->
+            <button class="button" role="button" style="background-image: url(/Bilder/ruterkort.png);" onclick="location.href='RON/'"></button>
+        </div>
+        <div class="game-board"> <!-- PIANO -->
+            <div class="game-title">Kommer "snart"</div>
+            <button class="button" role="button"  onclick="location.href='Piano/'" style="background-image: url(/Bilder/piano.png);"></button>
+        </div>
+    </div>
+
+    <script> //javascript for å spille av lyd
+        const audio = document.getElementById("myAudio");
+        const audioSource = document.getElementById("audioSource");
+
+        const playlist = [
+            "/Audio/gravity-falls-opening-theme-full.mp3",
+            "/Audio/angry-birds-epic-main-theme.mp3",
+        ];
+
+        let currentSong = Math.floor(Math.random() * playlist.length);
+
+        function playCurrentSong() {
+            audioSource.src = playlist[currentSong]; // So audio.load has something to load
+            audio.load();
+            audio.play();
+        }
+
+        function playAudio() {
+            if (audio.paused) {
+                audio.play();
+            }
+        }
+
+        function pauseAudio() {
+            audio.pause();
+        }
+
+        function updateStatus() {
+            console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+            if (audio.paused) {
+            } else {
+                console.log("Playing song: " + playlist[currentSong]);
+            }
+        }
+
+        // Spill neste sang automatisk
+        audio.onended = function () {
+            currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+            playCurrentSong();
+        };
+
+        audio.onplay = updateStatus;
+        audio.onpause = updateStatus;
+
+        // Auto-start musikk ved lasting av siden
+        window.onload = function () {
+            playCurrentSong();
+        };
+    </script> 
+
+</body>
+</html>

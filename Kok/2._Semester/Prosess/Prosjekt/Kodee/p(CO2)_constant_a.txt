@@ -1,0 +1,30 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+
+def K_H(T, a): #Henrys Constant as a function of Temperature and alpha
+    c1, c2, c3, c4, c5 = 4.966563e2, 3.41697e5, 1.169131, 1.47225, 1.28338
+    return (c1 + c2 * a / T) * np.exp(c3 * a**2 + c4 / T + c5 * a / (T**2))
+
+def p(a, K_2, T): #The partialpressure of CO2, equation from Chapter 3.1 
+    return ((K_H(T, a) * a**2) / (K_2 * (1 - 2 * a)**2))/100 #Dividing by 100 to convert to bar
+
+# Konstanter og verdier
+Temperatures = np.array([273, 298, 313, 333, 353, 373, 393, 423])
+K_2_values = np.array([3.93e5, 3.70e4, 1.14e4, 2.43e3, 5.78e2, 2.46e2, 4.08e1, 6.74])
+alfa_verdier = np.linspace(0, 0.5, 8)  # 8 verdier, samme som temperaturer
+colors = ['blue', 'red', 'green', 'orange', 'purple', 'brown', 'pink', 'gray'] #Different color for different values of T and alpha
+
+plt.figure(figsize=(10, 8))  # Adjusting for readability
+
+for idx, a in enumerate(alfa_verdier):  
+    p_values = [p(a, K_2_values[i], Temperatures[i]) for i in range(len(Temperatures))]    
+    plt.scatter(Temperatures, p_values, color=colors[idx], label=f"a = {a:.2f}")
+    plt.plot(Temperatures, p_values, color=colors[idx])
+
+plt.title(r"$p(CO_2)$ som funksjon av Temperatur for gitt $\alpha$")
+plt.xlabel("Temperatur [K]")
+plt.ylabel(r"$p(CO_2)$ [bar]")
+plt.legend()
+plt.grid(True)
+plt.show()
