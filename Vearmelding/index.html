@@ -619,7 +619,7 @@
             const response = await fetch(url);
             const data = await response.json();
             
-            // Flatten 2D array [[val1], [val2]] into ['val1', 'val2']
+            // [[val1], [val2]] into ['val1', 'val2']
             const flatValues = data.values ? data.values.flat() : [];
             console.log(flatValues);
             return flatValues;

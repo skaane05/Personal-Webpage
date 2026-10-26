@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGP</title>
+
+  <style>
+    :root {
+        --bg: #12100f;
+        --panel: rgba(30, 26, 24, 0.92);
+        --yellow: #f9cf00;
+        --muted: #c2b8b2;
+        --blue: #07318b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: #f3ede9;
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      font-family: monospace;
+      text-transform: uppercase;
+    }
+
+    .spectrum {
+      width: min(100%, 760px);
+      background: var(--panel);
+      border: 1px solid #f9cf00;
+      border-radius: 5px;
+      box-shadow: 0 0 35px blue;
+      overflow: hidden;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .visualizer {
+      padding: 12px 12px 0;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 220px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 18px;
+      padding: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      color: #f3ede9;
+      background: #211b19;
+      border: 1px solid var(--blue);
+      border-radius: 3px;
+      font: inherit;
+    }
+
+    select:focus-visible, button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 3px;
+    }
+
+    button {
+      cursor: pointer;
+      color: var(--yellow);
+      transition: background .2s;
+    }
+
+    button:hover {
+      background: rgba(233, 255, 66, 0.12);
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .control-row button {
+      width: 130px;
+      flex-shrink: 0;
+    }
+
+    .sensitivity {
+      flex: 1;
+      min-width: 0;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .track-name {
+      color: var(--yellow);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      canvas { height: 160px; }
+      .header { font-size: 12px; }
+      .control-row { align-items: stretch; flex-direction: column; }
+      .control-row button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="spectrum">
+    <header class="header">
+      <span>Audio visualizer</span>
+      <span class="status" id="status">READY</span>
+    </header>
+
+    <div class="visualizer">
+      <canvas id="spectrum"></canvas>
+    </div>
+
+    <section class="controls">
+      <div>
+        <label for="track">SELECT AUDIO TRACK</label>
+        <select id="track">
+
+        </select>
+      </div>
+
+      <div class="control-row">
+        <button id="play">▶ PLAY</button>
+
+        <div class="sensitivity">
+          <label for="sensitivity">
+            SENSITIVITY: <span id="sensitivityValue">5.0</span>
+          </label>
+          <input
+            type="range"
+            id="sensitivity"
+            min="1"
+            max="10"
+            step="0.1"
+            value="5"
+          />
+        </div>
+      </div>
+
+      <div class="track-name" id="trackName">NO TRACK PLAYING</div>
+
+      <audio id="audio" preload="none" crossorigin="anonymous"></audio>
+    </section>
+  </main>
+
+  <script>
+    // Legg til eller fjern forhåndsdefinerte spor her.
+    const tracks = {
+      Dagsrevyen: {
+        name: "Dagsrevyen remix",
+        url: "/Audio/mixdown-nrk-nyheter-themesvignett-dagsrevyen--oddasat.mp3"
+      },
+      FNAF: {
+        name: "FNAF",
+        url: "/Audio/join-us-for-a-bite-sfm.mp3"
+      },
+      vacant: {
+        name: "Vacant",
+        url: "https://assets.codepen.io/7558/Vacant.mp3"
+      },
+      lxstnght: {
+        name: "LXSTNGHT",
+        url: "https://assets.codepen.io/7558/lxstnght-back_1.mp3"
+      }
+    };
+
+    const audio = document.getElementById("audio");
+    const canvas = document.getElementById("spectrum");
+    const ctx = canvas.getContext("2d");
+    const trackSelect = document.getElementById("track");
+    const playButton = document.getElementById("play");
+    const status = document.getElementById("status");
+    const trackName = document.getElementById("trackName");
+    const sensitivity = document.getElementById("sensitivity");
+    const sensitivityValue = document.getElementById("sensitivityValue");
+
+    Object.entries(tracks).forEach(([key, element]) => {
+        trackSelect.innerHTML += `
+            <option value="${key}">${element.name}</option>
+        `;
+    });
+
+    let audioContext;
+    let analyser;
+    let source;
+    let frequencyData;
+    let currentTrack = "";
+    let initialized = false;
+    let resizeObserver;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function initAudio() {
+      if (initialized) {
+        if (audioContext.state === "suspended") {
+          return audioContext.resume();
+        }
+        return Promise.resolve();
+      }
+
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.82;
+
+      frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+      source = audioContext.createMediaElementSource(audio);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+
+      initialized = true;
+      return audioContext.resume();
+    }
+
+    async function selectTrack() {
+      const track = tracks[trackSelect.value];
+
+      if (currentTrack !== track.url) {
+        audio.pause();
+        audio.src = track.url;
+        audio.load();
+        currentTrack = track.url;
+      }
+
+      trackName.textContent = "TRACK: " + track.name;
+      status.textContent = "LOADING";
+
+      try {
+        await initAudio();
+        await audio.play();
+
+        playButton.textContent = "❚❚ PAUSE";
+        status.textContent = "PLAYING";
+      } catch (error) {
+        console.error("Audio playback error:", error);
+        status.textContent = "PLAYBACK ERROR";
+        trackName.textContent =
+          "COULD NOT PLAY TRACK. CHECK THE AUDIO URL OR NETWORK.";
+      }
+    }
+
+    playButton.addEventListener("click", async () => {
+      if (!audio.paused && !audio.ended) {
+        audio.pause();
+        playButton.textContent = "▶ PLAY";
+        status.textContent = "PAUSED";
+        return;
+      }
+
+      await selectTrack();
+    });
+
+    trackSelect.addEventListener("change", async () => {
+      await selectTrack();
+    });
+
+    audio.addEventListener("ended", () => {
+      playButton.textContent = "▶ PLAY";
+      status.textContent = "FINISHED";
+    });
+
+    audio.addEventListener("error", () => {
+      status.textContent = "AUDIO ERROR";
+    });
+
+    sensitivity.addEventListener("input", () => {
+      sensitivityValue.textContent =
+        Number(sensitivity.value).toFixed(1);
+    });
+
+    function drawSpectrum() {
+      requestAnimationFrame(drawSpectrum);
+
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+
+      ctx.clearRect(0, 0, width, height);
+
+      if (!analyser) {
+        drawIdle(width, height);
+        return;
+      }
+
+      analyser.getByteFrequencyData(frequencyData);
+
+      const sensitivityFactor = Number(sensitivity.value) / 5;
+      const barCount = 128;
+      const gap = 2;
+      const barWidth = width / barCount;
+
+      // Subtilt rutenett.
+      ctx.strokeStyle = "#07318b";
+      ctx.lineWidth = 1;
+
+      for (let i = 1; i < 5; i++) {
+        const y = (height / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < barCount; i++) {
+        const value = frequencyData[i] / 255;
+        const barHeight = Math.min(
+          height,
+          value * height * sensitivityFactor
+        );
+
+        const x = i * barWidth;
+
+        ctx.fillStyle = `hsl(38, 100%, 49%)`; // HC-gul
+        ctx.fillRect(
+          x,
+          height - barHeight,
+          Math.max(1, barWidth - gap),
+          barHeight
+        );
+      }
+    }
+
+    resizeCanvas();
+
+    if ("ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(resizeCanvas);
+      resizeObserver.observe(canvas);
+    } else {
+      window.addEventListener("resize", resizeCanvas);
+    }
+
+    drawSpectrum();
+  </script>
+</body>
+</html>

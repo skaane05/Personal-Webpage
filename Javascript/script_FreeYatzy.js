@@ -552,3 +552,101 @@ document.addEventListener('keydown', function(event) {
 //så : renderDice()
 renderDice();
 displayLeaderboard(); /*Dette er dine PERSONLIGE BESTE*/
+
+//Make auto-updating leaderboard
+async function getSheetValuesExternal() {
+    const spreadsheetId = '1NpeNBxfOPsvLRunof-Frcq3zubF7_yDQY59Em3gHeKU'; // etter /d/ i regneark URL
+    const range = 'Innsendinger!A2:C'; // Ser gjennom HELE kolonne A, B og C
+    const apiKey = 'AIzaSyDXIPJoqiN1bCqXrgwF9frspm3_2NSrbus'; // double check
+    
+    const url =`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(range)}?key=${apiKey}`;
+    console.log("URL:", url)
+    return fetch(url)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP-feil: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const rader = data.values;
+
+        if (!rader || rader.length === 0) {
+            console.error("Rader = 0")
+            return [];
+        }
+
+        const startDato = new Date('2026-08-14T00:00:00');
+        const sluttDato = new Date('2026-12-31T23:59:59.999');
+        return rader 
+            .map(rad => ({
+                dato: new Date(rad[0]),
+                navn: String(rad[1] ?? '').trim(),
+                poeng: Number(rad[2])
+            }))
+            .filter(entry =>
+                !isNaN(entry.dato.getTime()) &&
+                entry.navn !== '' &&
+                Number.isFinite(entry.poeng) &&
+                entry.dato >= startDato &&
+                entry.dato <= sluttDato
+            )
+            .sort((a, b) => b.poeng - a.poeng)
+            .slice(0, 10);
+    }) 
+    .catch(error => {
+        console.error("Feil ved henting av data:", error);
+        return [];
+    });
+
+}
+
+function radPoengGyldig(poeng) {
+    console.log("Poeng", poeng)
+    return Number.isFinite(poeng);
+}
+
+function displayTOPLeaderboard() {
+    console.log("Trying to Display Leaderboard")
+    let beste_innsendinger = getSheetValuesExternal();
+    if (!Array.isArray(beste_innsendinger)) {
+        console.error("beste_innsendinger er ikke en array!", beste_innsendinger);
+        return; 
+    }
+    let html = "<table><tr><th>Rank</th><th>Name</th><th>Score</th></tr>";
+    if (beste_innsendinger.length === 0) {
+        html += "<tr><td colspan='3'>Ingen innsendinger hentet</td></tr>";
+    } else {
+        beste_innsendinger.forEach((entry, index) => {
+            html += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${entry.navn}</td>
+                    <td>${entry.poeng}</td>
+                </tr>`;
+        });
+    }
+
+    html += "</table>";
+
+    document.getElementById("leaderboard-table").innerHTML = html;
+}
+
+async function init() {
+    try {
+        eksdata = await getSheetValuesExternal();
+
+        console.log("Top10:", eksdata);
+        console.log("Antall hentet:", eksdata.length);
+
+        if (!eksdata || eksdata.length === 0) {
+            console.error("Ingen innsendinder ble hentet fra Google Sheet.");
+            return;
+        }
+
+    } catch (error) {
+        console.error("Kunne ikke legge til ekstern ledertavle:", error);
+    }
+}
+displayTOPLeaderboard();
+init();
