@@ -1,415 +1,339 @@
-
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CGP</title>
+    <title>CGPs Beste </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script> <!-- For CryptoJs-->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PNJ5XKVFTR"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-  <style>
-    :root {
-        --bg: #12100f;
-        --panel: rgba(30, 26, 24, 0.92);
-        --yellow: #f9cf00;
-        --muted: #c2b8b2;
-        --blue: #07318b;
+    gtag('config', 'G-PNJ5XKVFTR');
+    </script>
+    <style>
+      .music-player {
+        margin-top: 100px;
+        bottom: 0;
+        left: 25%;
+        width: 100%;
+        color: #f9cf00; 
+    }
+    .SangRad {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
     }
 
-    * {
-      box-sizing: border-box;
+    .PlayThisSongButton {
+        cursor: pointer;
+        padding: 6px 12px;
+    }
+    .progress-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 10px 0;
     }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      color: #f3ede9;
-      background-color: var(--bg);
-      background-image:
-        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 40px 40px;
-      font-family: monospace;
-      text-transform: uppercase;
+    .song-times {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 4px;
     }
 
-    .spectrum {
-      width: min(100%, 760px);
-      background: var(--panel);
-      border: 1px solid #f9cf00;
-      border-radius: 5px;
-      box-shadow: 0 0 35px blue;
-      overflow: hidden;
+    #progressBar {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 5px;
+        border-radius: 5px;
+        background: #d0d0d0;
+        cursor: pointer;
+        display: block;
+        margin: 0;
+    }
+    
+    .Songlist {
+      margin-bottom: 50px;
     }
 
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 16px;
-      border-bottom: 1px solid var(--yellow);
-      color: var(--yellow);
-      font-size: 14px;
-      letter-spacing: 1px;
-    }
-
-    .status {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .visualizer {
-      padding: 12px 12px 0;
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: 220px;
-    }
-
-    .controls {
-      display: grid;
-      gap: 18px;
-      padding: 16px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    select, button {
-      width: 100%;
-      padding: 12px;
-      color: #f3ede9;
-      background: #211b19;
-      border: 1px solid var(--blue);
-      border-radius: 3px;
-      font: inherit;
-    }
-
-    select:focus-visible, button:focus-visible,
-    input:focus-visible {
-      outline: 2px solid var(--blue);
-      outline-offset: 3px;
-    }
-
-    button {
-      cursor: pointer;
-      color: var(--yellow);
-      transition: background .2s;
-    }
-
-    button:hover {
-      background: rgba(233, 255, 66, 0.12);
-    }
-
-    .control-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .control-row button {
-      width: 130px;
-      flex-shrink: 0;
-    }
-
-    .sensitivity {
-      flex: 1;
-      min-width: 0;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--blue);
-    }
-
-    .track-name {
-      color: var(--yellow);
-      font-size: 11px;
-      overflow-wrap: anywhere;
-    }
-
-    @media (max-width: 480px) {
-      body { padding: 12px; }
-      canvas { height: 160px; }
-      .header { font-size: 12px; }
-      .control-row { align-items: stretch; flex-direction: column; }
-      .control-row button { width: 100%; }
-    }
-  </style>
+    </style>
 </head>
-
 <body>
-  <main class="spectrum">
-    <header class="header">
-      <span>Audio visualizer</span>
-      <span class="status" id="status">READY</span>
-    </header>
-
-    <div class="visualizer">
-      <canvas id="spectrum"></canvas>
+  <div class="Songlist">
+    <h1>Sangutvalg</h1>
+    <p>Om du trykker på "spill" mens en sang spilles, kan koden bli kvelt. Bare trykk spill på nytt.</p>
+    <p>Hint: Du kan dra slideren</p>
+    <p>Noen Sanger starter med stillhet / litt tidlig - dette skal fikses</p>
+    <div id="Sangutvalg"></div>
+    <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+  </div>
+  <div class="music-player">
+    <audio id="myAudio"> <!-- Add progressbar so user can skip/go bak-->
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div style="display: flex; gap: 20px; flex-direction: row;">
+        <!--<button type="button" onclick="togglePlay()" aria-label="Spill eller pause musikk">
+            <img src="/Bilder/PlayingSong.svg" alt="">
+        </button>   
+        <button type="button" onclick="nextSong()" aria-label="Spill eller pause musikk">
+            <img src="/Bilder/SkipSong.svg" alt="">
+        </button> 
+      -->
+        <img src="/Bilder/NoSound.svg" onclick="togglePlay()" id="toggleplayButton" style="width: 50px; height: 50px;" title="Spill/Pause musikk">
+        <img src="/Bilder/SkipSong.svg" onclick="nextSong(); this.style.transform='translateX(10px)'; setTimeout(() => { this.style.transform=''; }, 300);" id="nextSong" style="width: 50px; height: 50px; transition: transform 0.5s;" title="Neste sang">
+      </div>
+  </div>
+  <div class="progress-container">
+    <div id="SongName">Ingen sang valgt</div>
+    <div class="song-times">
+        <span id="currentTime">0:00</span>
+        <span id="duration">0:00</span>
     </div>
 
-    <section class="controls">
-      <div>
-        <label for="track">SELECT AUDIO TRACK</label>
-        <select id="track">
+    <input
+        type="range"
+        id="progressBar"
+        min="0"
+        max="1000"
+        value="0"
+        step="1"
+        aria-label="Sangposisjon"
+    >
+  </div>
+   
 
-        </select>
-      </div>
+    <script>
+        let startTime = Date.now();
+    </script>
+    <script>
+      /*LES HER --- Alt angående selve spillet yatzy, som reset-button er under script.js, google gtag om reset-button er under*/
+      const audio = document.getElementById("myAudio");
+      const audioSource = document.getElementById("audioSource");
 
-      <div class="control-row">
-        <button id="play">▶ PLAY</button>
+      const playlist = [
+          "/Audio/CGP_Sanger/3-klasse-CGP-2026.mp3",
+          "/Audio/CGP_Sanger/AC-Style.mp3",
+          "/Audio/CGP_Sanger/DALJEKÅT.mp3",
+          "/Audio/CGP_Sanger/De-Gamle_En-gang-til_CGP2023.mp3",
+          "/Audio/CGP_Sanger/Hebraisk_kokevise_CGP2023.mp3",
+          "/Audio/CGP_Sanger/Laboratoddy_CGP2026.mp3",
+          "/Audio/CGP_Sanger/Nanjing-House.mp3",
+          "/Audio/CGP_Sanger/Operon-Glow.mp3",
+          "/Audio/CGP_Sanger/Pølse i Lompe - Team KJEMPEGRILL.mp3",
+          "/Audio/CGP_Sanger/Styret.mp3",
+          ];
+      const songNames = [
+        "Woo-hoo - Klasse 28 (2026)",
+        "AC Style - AC  (2026)",
+        "DALJEKÅT - (2018)",
+        "En gang til - De gamle (2023)",
+        "Hebraisk Kokevise - Klasse 26 (2023)",
+        "Laboratoddy (2026)",
+        "Nanjing House - De gamle (2026)",
+        "GFP - Operon (2026)",
+        "Pølse i Lompe - Team KJEMPEGRILL (2025)",
+        "MVA - Styret V26",
+      ]
 
-        <div class="sensitivity">
-          <label for="sensitivity">
-            SENSITIVITY: <span id="sensitivityValue">5.0</span>
-          </label>
-          <input
-            type="range"
-            id="sensitivity"
-            min="1"
-            max="10"
-            step="0.1"
-            value="5"
-          />
-        </div>
-      </div>
+      function displaySongs(div_ID) {
+            const utvalg = document.getElementById(div_ID);
 
-      <div class="track-name" id="trackName">NO TRACK PLAYING</div>
+            if (!utvalg) {
+                console.error("Klarte ikke å hente sangutvalg");
+                return;
+            }
 
-      <audio id="audio" preload="none" crossorigin="anonymous"></audio>
-    </section>
-  </main>
+            // Kontroller at hver sang har en tilhørende lydfil
+            if (playlist.length !== songNames.length) {
+                console.error("Ulik lengde på playlist og songNames");
+                return;
+            }
 
-  <script>
-    // Legg til eller fjern forhåndsdefinerte spor her.
-  
-    const tracks = {
-      Woohoo: {
-        name: "Woo-hoo, Hvor er den sommerjobben?",
-        url: "/Audio/CGP_Sanger/3-klasse-CGP-2026.mp3"
-      },
-      DALJEKAAT: {
-        name: "DALJEKÅT (CGP 2018)",
-        url: "/Audio/CGP_Sanger/DALJEKÅT.mp3"
-      },
-      Engangtil: {
-        name: "En gang til (De gamle 2023)",
-        url: "/AudioCGP_SangerDe-Gamle_En-gang-til_CGP2023.mp3"
-      },
-      Hebraisk: {
-        name: "Hebraisk Kokevise (1. klasse 2024)",
-        url: "/Audio/CGP_Sanger/Hebraisk_kokevise_CGP2023.mp3"
-      },
-      KJEMPEGRILL: {
-        name: "Pølser i lompe - Team KJEMPEGRILL",
-        url: "/Audio/CGP_Sanger/Pølse i Lompe - Team KJEMPEGRILL.mp3"
-      },
-      NANJING: {
-        name: "Nanjing House (De gamle 2026)",
-        url: "/Audio/CGP_Sanger/Nanjing-House.mp3"
-      },
-      MVA: {
-        name: "MVA - Styret V26",
-        url: "/Audio/CGP_Sanger/Styret.mp3"
-      },
-      OPERON: {
-        name: "Biotechno GFP - Operon",
-        url: "/Audio/CGP_Sanger/Operon-Glow.mp3"
-      },
-      Laboratoddy: {
-        name: "Laboratoddy 2026",
-        url: "/Audio/CGP_Sanger/Laboratoddy_CGP2026.mp3"
-      },
-      AC: {
-        name: "AC Style (2026)",
-        url: "/Audio/CGP_Sanger/AC-style.mp3"
-      },
-    };
+            // Tøm listen før den bygges opp på nytt
+            utvalg.innerHTML = "";
 
-    const audio = document.getElementById("audio");
-    const canvas = document.getElementById("spectrum");
-    const ctx = canvas.getContext("2d");
-    const trackSelect = document.getElementById("track");
-    const playButton = document.getElementById("play");
-    const status = document.getElementById("status");
-    const trackName = document.getElementById("trackName");
-    const sensitivity = document.getElementById("sensitivity");
-    const sensitivityValue = document.getElementById("sensitivityValue");
+            songNames.forEach((song, index) => {
+                // Opprett en rad for sangen
+                const row = document.createElement("div");
+                row.className = "SangRad";
 
-    Object.entries(tracks).forEach(([key, element]) => {
-        trackSelect.innerHTML += `
-            <option value="${key}">${element.name}</option>
-        `;
-    });
+                // Opprett sangnavnet
+                const title = document.createElement("span");
+                title.className = "line";
+                title.textContent = song;
 
-    let audioContext;
-    let analyser;
-    let source;
-    let frequencyData;
-    let currentTrack = "";
-    let initialized = false;
-    let resizeObserver;
+                // Opprett avspillingsknappen
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "PlayThisSongButton";
+                button.textContent = "Spill";
+                button.title = `Spill ${song}`;
+                button.addEventListener("click", () => {
+                    playThis(index);
+                });
 
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
+                // Sett sammen raden
+                row.appendChild(title);
+                row.appendChild(button);
 
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function initAudio() {
-      if (initialized) {
-        if (audioContext.state === "suspended") {
-          return audioContext.resume();
+                // Legg raden til på nettsiden
+                utvalg.appendChild(row);
+            });
         }
-        return Promise.resolve();
+      displaySongs("Sangutvalg");
+
+      let currentSong = Math.floor(Math.random() * playlist.length); //Starter med en random sang, med mindre du velger. Se også kommentaren til windows.onload funksjonen.
+
+      async function playCurrentSong() {
+          audioSource.src = playlist[currentSong];
+          audio.load();
+
+          try {
+              await audio.play();
+          } catch (error) {
+              if (error.name !== "AbortError") {
+                  console.error("Kunne ikke spille av sangen:", error);
+              }
+          }
       }
 
-      audioContext = new AudioContext();
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.82;
-
-      frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-      source = audioContext.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
-
-      initialized = true;
-      return audioContext.resume();
-    }
-
-    async function selectTrack() {
-      const track = tracks[trackSelect.value];
-
-      if (currentTrack !== track.url) {
-        audio.pause();
-        audio.src = track.url;
-        audio.load();
-        currentTrack = track.url;
+      function playAudio() {
+      if (audio.paused) {
+          audio.play();
+      }
       }
 
-      trackName.textContent = "TRACK: " + track.name;
-      status.textContent = "LOADING";
-
-      try {
-        await initAudio();
-        await audio.play();
-
-        playButton.textContent = "❚❚ PAUSE";
-        status.textContent = "PLAYING";
-      } catch (error) {
-        console.error("Audio playback error:", error);
-        status.textContent = "PLAYBACK ERROR";
-        trackName.textContent =
-          "COULD NOT PLAY TRACK. CHECK THE AUDIO URL OR NETWORK.";
-      }
-    }
-
-    playButton.addEventListener("click", async () => {
-      if (!audio.paused && !audio.ended) {
-        audio.pause();
-        playButton.textContent = "▶ PLAY";
-        status.textContent = "PAUSED";
-        return;
+      function pauseAudio() {
+          audio.pause();
       }
 
-      await selectTrack();
-    });
-
-    trackSelect.addEventListener("change", async () => {
-      await selectTrack();
-    });
-
-    audio.addEventListener("ended", () => {
-      playButton.textContent = "▶ PLAY";
-      status.textContent = "FINISHED";
-    });
-
-    audio.addEventListener("error", () => {
-      status.textContent = "AUDIO ERROR";
-    });
-
-    sensitivity.addEventListener("input", () => {
-      sensitivityValue.textContent =
-        Number(sensitivity.value).toFixed(1);
-    });
-
-    function drawSpectrum() {
-      requestAnimationFrame(drawSpectrum);
-
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-
-      ctx.clearRect(0, 0, width, height);
-
-      if (!analyser) {
-        drawIdle(width, height);
-        return;
+      function updateStatus() {
+          console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+          if (audio.paused) {
+              document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+          } else {
+              document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+              console.log("Playing song: " + playlist[currentSong]);
+          }
       }
 
-      analyser.getByteFrequencyData(frequencyData);
+      // Spill neste sang automatisk
+      audio.onended = function () {
+          currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+          console.log("Prøver å spille neste sang")
+          playThis(currentSong)
+          //playCurrentSong();
+      };
 
-      const sensitivityFactor = Number(sensitivity.value) / 5;
-      const barCount = 128;
-      const gap = 2;
-      const barWidth = width / barCount;
-
-      // Subtilt rutenett.
-      ctx.strokeStyle = "#07318b";
-      ctx.lineWidth = 1;
-
-      for (let i = 1; i < 5; i++) {
-        const y = (height / 5) * i;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
+        // Toggle play/pause for the audio element when the image is clicked
+      function togglePlay() {
+          // Hvis audio er på, så pause
+          if (audio.paused) {
+              playAudio();
+              document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+          } else { // Hvis audio er av, så spill
+              pauseAudio();
+              document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+          }
       }
 
-      for (let i = 0; i < barCount; i++) {
-        const value = frequencyData[i] / 255;
-        const barHeight = Math.min(
-          height,
-          value * height * sensitivityFactor
-        );
-
-        const x = i * barWidth;
-
-        ctx.fillStyle = `hsl(38, 100%, 49%)`; // HC-gul
-        ctx.fillRect(
-          x,
-          height - barHeight,
-          Math.max(1, barWidth - gap),
-          barHeight
-        );
+      // Bytt til neste sang når knappen klikkes
+      function nextSong() {
+          currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+          playThis(currentSong);
+          document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
       }
-    }
 
-    resizeCanvas();
+      function playThis(song) {
+        if (song < 0 || song >= playlist.length) {
+            console.error("Ugyldig sangindeks:", song);
+            return;
+        }
+        currentSong = song;
+        playCurrentSong();
 
-    if ("ResizeObserver" in window) {
-      resizeObserver = new ResizeObserver(resizeCanvas);
-      resizeObserver.observe(canvas);
-    } else {
-      window.addEventListener("resize", resizeCanvas);
-    }
+        //Legg til sangnavn: "Spiller av X" 
+        const SangNavn = document.getElementById("SongName");
+        if (!SangNavn) {
+            console.error("klarte ikke å vise SangNavn");
+            return;
+        }
+        SangNavn.innerText = songNames[song];
+      }
 
-    drawSpectrum();
-  </script>
+      audio.onplay = updateStatus;
+      audio.onpause = updateStatus;
+      // Auto-start musikk ved lasting av siden
+      /*window.onload = function () {
+          playCurrentSong();
+      };*/ //google elns har oppdatert sin "sikkerhet" som gjør at musikk ikke kan spilles av automatisk
+
+
+
+      //PROGRESJONSBAR laget av AI
+      const progressBar = document.getElementById("progressBar");
+      const currentTimeDisplay = document.getElementById("currentTime");
+      const durationDisplay = document.getElementById("duration");
+
+      // Gjør sekunder om til formatet minutter:sekunder
+      function formatTime(seconds) {
+          if (!Number.isFinite(seconds) || seconds < 0) {
+              return "0:00";
+          }
+
+          const minutes = Math.floor(seconds / 60);
+          const remainingSeconds = Math.floor(seconds % 60);
+
+          return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+      }
+
+      // Oppdater tidsvisningen når sangens metadata er lastet
+      audio.addEventListener("loadedmetadata", () => {
+          durationDisplay.textContent = formatTime(audio.duration);
+      });
+
+      // Oppdater progresjonsbaren mens sangen spiller
+      audio.addEventListener("timeupdate", () => {
+          if (Number.isFinite(audio.duration) && audio.duration > 0) {
+              progressBar.value = (audio.currentTime / audio.duration) * 1000;
+              currentTimeDisplay.textContent = formatTime(audio.currentTime);
+              durationDisplay.textContent = formatTime(audio.duration);
+          }
+      });
+
+      // La brukeren hoppe til et annet tidspunkt
+      progressBar.addEventListener("input", () => {
+          if (Number.isFinite(audio.duration) && audio.duration > 0) {
+              const percentage = Number(progressBar.value) / 1000;
+              audio.currentTime = percentage * audio.duration;
+
+              currentTimeDisplay.textContent = formatTime(audio.currentTime);
+          }
+      });
+    </script>
+
+    <script>
+        window.addEventListener("beforeunload", () => {
+        let endTime = Date.now();
+        let durationInSeconds = Math.round((endTime - startTime) / 1000);
+
+        gtag('event', 'time_on_page', {
+            'event_category': 'engagement',
+            'event_label': 'CGP',
+            'value': durationInSeconds
+        });
+        });
+  
+    </script>
 </body>
 </html>
