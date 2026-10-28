@@ -1,5 +1,5 @@
 <!--
-All code is found on W3Schools
+All code related to the playing of background video is found on W3Schools:
 https://www.w3schools.com/howto/howto_css_fullscreen_video.asp
 
 Video belongs to / downloaded from
@@ -29,8 +29,7 @@ https://thelinestudio.com/work/chobani
         padding: 20px;
     }
 
-    /* Style the button used to pause/play the video */
-    #myBtn {
+    .button1 {
         width: 200px;
         font-size: 18px;
         padding: 10px;
@@ -38,39 +37,244 @@ https://thelinestudio.com/work/chobani
         background: #000;
         color: #fff;
         cursor: pointer;
+        margin-bottom: 10px;
     }
 
-    #myBtn:hover {
+    .button1:hover {
         background: #ddd;
         color: black;
     }
+
+    #CGP:hover {
+      color: darkblue;
+      font-weight: bold; /* Fat text*/
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(to bottom right, gold, #fff8dc);
+    }
+    #Yatzy:hover {
+      color: cyan; /* black tekst*/
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.4); 
+      background: linear-gradient(to bottom right, #ff00ff, #ffb6c1);
+    }
+    #MorePages:hover {
+      box-shadow: 0 0 15px rgba(220, 20, 60, 0.4); 
+      background: linear-gradient(to bottom right, #dc143c, #ff6b8b);
+      font-weight: bold;
+      color: black;
+    }
+    #KontorTavle:hover {
+      box-shadow: 0 0 15px rgba(50, 205, 50, 0.4); 
+      background: linear-gradient(to bottom right, #32cd32, #adff2f);
+      color: black;
+      font-weight: bold;
+
+    }
+
+    #Kok:hover {
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); 
+    background: linear-gradient(to bottom right, #ff4500, #f49980);
+      font-weight: bold;
+      color: silver;
+    }
+
+    #Memes:hover {
+        background: repeating-linear-gradient(
+        45deg,
+        #ff3366,
+        #ff3366 20px,
+        #ff9933 20px,
+        #ff9933 40px,
+        #ffff33 40px,
+        #ffff33 60px,
+        #33cc66 60px,
+        #33cc66 80px,
+        #3399ff 80px,
+        #3399ff 100px,
+        #9933ff 100px,
+        #9933ff 120px
+      );
+      color: white;
+      font-weight: bold;
+      text-shadow: 2px 2px grey;
+
+    }
+
+    /*
+    More Gradients
+
+    Electric Blue
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.4); 
+    background: linear-gradient(to bottom right, #00bfff, #87cefa);
+
+    Purple
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); 
+    background: linear-gradient(to bottom right, #8a2be2, #e6e6fa);
+
+    Bronze
+    box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+    background: linear-gradient(to bottom right, #cd7f32, #ffe4b5);
+
+    "Solnedgang"
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); 
+    background: linear-gradient(to bottom right, #ff4500, #ffdad0);
+
+    Silver
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.5);
+    background: linear-gradient(to bottom right, silver, #f5f5f5);
+    */
+
+    .ticket { /* Rainblow glow on images */
+      animation: tilt 6s ease-in-out infinite;
+    }
+
+    .ticket::after {
+      content: ""; 
+      position: absolute;   
+      inset: 0;
+      background: repeating-linear-gradient(
+        115deg,
+        #b3306e,
+        #b89a2c,
+        #2ea86c,
+        #2c78c8,
+        #7a3cb8,
+      );
+      mix-blend-mode: color-dodge;
+      animation: foil 6s ease-in-out infinite;
+    }
+
+    .cover{ /*Background glow for images*/
+      background: url(/Bilder/20250930_022213.jpg) center / cover;
+      position: relative;
+    }
+    .cover::before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      z-index: -1;
+      background: inherit;
+      filter: blur(40px) saturate(1.8);
+      scale: 1.1;
+    }
+
+    /* 1. Scenen gir selve 3D-dybden til alt som skjer inni den */
+    .scene {
+      height: 300px;
+      width: 200px;
+      margin: 150px auto;
+      perspective: 1000px; /* Gir dybdefølelse i rommet */
+    }
+
+    /* 2. Ringen din som holder på 3D-rommet og roterer */
+    .ring {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d; /* Denne hindrer at kortene blir flate */
+      animation: autoSnurr 20s linear infinite;
+    }
+
+    .ring:hover {
+      animation-play-state: paused;
+      cursor: pointer;
+    }
+
+    /* 3. Kortene stables i midten og skyves ut i en sirkel */
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      /* Hvert kort roteres basert på sin indeks (--i) og skyves ut på Z-aksen */
+      /* Formel for 6 kort: 360 grader / 6 = 60 grader per kort */
+      transform: rotateY(calc(var(--i) * 60deg)) translateZ(300px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    /* 4. Animasjonen som snurrer hele ringen rundt */
+    @keyframes autoSnurr {
+      from {
+        transform: rotateY(0deg);
+      }
+      to {
+        transform: rotateY(360deg);
+      }
+    }
+
     </style>
 </head>
+
 
 <!-- The video -->
 <video autoplay muted loop id="myVideo">
   <source src="DearAlice.mp4" type="video/mp4">
 </video>
 
-<!-- Optional: some overlay text to describe the video -->
+<div class="scene" style="visibility: hidden;" id="3d-image-carousel">
+  <div class="ring">
+    <div class="card" style="--i: 0;"><img src="/Bilder/alma_balls.jpeg" alt="1"></div>
+    <div class="card" style="--i: 1;"><img src="/Bilder/AC_logo_svart.png" alt="2"></div>
+    <div class="card" style="--i: 2;"><img src="/Bilder/Digidalje_websjaepH_jx9BVTr.png" alt="3"></div>
+    <div class="card" style="--i: 3;"><img src="/Bilder/NOBEL.jpg" alt="4"></div>
+    <div class="card" style="--i: 4;"><img src="/Bilder/WebMemes/Webkomimportant.png" alt="5"></div>
+    <div class="card" style="--i: 5;"><img src="/Bilder/8213301.png" alt="6"></div>
+  </div>
+</div>
+
 <div class="content">
-  <h1>Motivasjon</h1>
-  <p>Dette er livet du f&aring;r n&aring;r du bare nyter det. F&oslash;lg den gylne regel og ikke sutre over fortiden. Gjort er gjort.</p>
+  <h1>Velkommen til Andrhska!</h1>
+  <p id="info">Her finner du Kok, Yatzy, Memes, CGP sanger, V&aelig;rmelding, Busstider, HC-arrangementer, Sudoku, Kortspill, og sikkert et par andre ting</p>
   <!-- Use a button to pause/play the video with JavaScript -->
-  <button id="myBtn" onclick="myFunction()">Pause</button>
+  <button id="myBtn" class="button1" onclick="pauseBackground()">Pause</button>
+  <button id="KontorTavle" class="button1"  onclick="window.location.href='/Vearmelding/index.html'">KontorTavle</button>
+  <button id="Yatzy" class="button1" onclick="window.location.href='/Spill/Fri-Yatzy/index.html'">Yatzy</button>
+  <button id="CGP" class="button1" onclick="window.location.href='/CGP/index.html'">CGP</button>
+  <button id="Kok" class="button1"   onclick="window.location.href='/Kok/index.html'">Kok</button>
+  <button id="Memes" class="button1"   onclick="window.location.href='/Memes/index.html'">Memes</button>
+  <button id="MorePages" class="button1 "  onclick="carusell()">Flere Sider</button>
 </div>
 
 <script>
-  var myVideo = document.getElementById("myVideo");
-  var myBtn = document.getElementById("myBtn");
+  const myVideo = document.getElementById("myVideo");
+  const myBtn = document.getElementById("myBtn");
+  const carusell3d = document.getElementById("3d-image-carousel")
 
-  function myFunction() {
+  function pauseBackground() {
     if (myVideo.paused) {
       myVideo.play();
+      carusell3d.style.visibility = "hidden";
+      myVideo.style.visibility = "visible";
       myBtn.innerHTML = "Pause";
     } else {
       myVideo.pause();
       myBtn.innerHTML = "Avspill";
     }
   }
+
+  function ChangeBackground() {
+    myVideo.pause();
+    myVideo.style.visibility = "hidden";
+    myBtn.innerHTML = "Avspill";
+    // Replace this with your actual image path
+    //Change the <p id="info"> also
+    document.body.style.backgroundImage = "url('KontorTavle.jpg')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+  }
+  function carusell() {
+    myVideo.pause();
+    myVideo.style.visibility = "hidden";
+    myBtn.innerHTML = "Avspill";
+    carusell3d.style.visibility = "visible";
+
+  }
+
 </script>
