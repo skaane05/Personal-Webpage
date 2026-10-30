@@ -1,0 +1,206 @@
+/*
+  Initial layout is mobile first, with changes done for desktop afterward.
+
+  The CSS Code is ordered by template area, so there are mutltiple media queries throughout
+*/
+
+* {
+    box-sizing: border-box;
+
+    
+    font-family: 'Ranade', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.25;
+
+    word-break: break-all;
+    word-break: break-word;
+}
+:root {
+  --bg-color: #b782e7;
+}
+
+h2 {
+  
+  font-family: 'Archivo', sans-serif;
+}
+p {
+  font-size: 20px;
+}
+.rule-paragraph {
+    text-align: left; 
+    width: 40%; /* 40% of the container width */
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+/* defining a background color variable per section */
+.welcome {
+    --bg-color: #f9cf00;
+    
+}
+.kitchen {
+  --bg-color: #ec3b82;
+}
+.games {
+  /*--bg-color: #729cf8;*/
+  font-family: "Press Start 2P", cursive;
+  font-style: normal;
+  font-weight: 400;
+  text-shadow: -1px 0 0 #fdff2a, -3px 0 0 #df4a42, 1px 0 0 #91fcfe, 3px 0 0 #4405fc;
+  margin: 0;
+  /*background: radial-gradient(circle at center, #b259ff 0%, #3a185c 100%);*/
+  color: white;
+  padding: 40px 20px;
+  background-image: url('/Bilder/arcade.jpg'); 
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover; /*Use contain if picture is much bigger than pc-screen *AND has the correct ratio obvi, because cover focuses on ratio while contain focuses on getting the entire picture in frame*/
+  background-position: center; /* Crops the top rather than the bottom if the picture is too big*/
+  display: flex;
+  flex-direction: row;
+}
+
+.howto {
+  --bg-color: #b782e7; /*Har trouble picking bolor, so set :root to this color */
+}
+.codereview {
+  --bg-color: #82b1e7; /*Har trouble picking bolor, so set :root to this color */
+}
+.memes {
+    /*--bg-color: #6Fc276;*/
+    font-family: 'Ranade', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    color: white;
+    padding: 40px 20px;
+    background-image: url('/Bilder/MemesMainPage.jpg'); 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover; /*Use contain if picture is much bigger than pc-screen *AND has the correct ratio obvi, because cover focuses on ratio while contain focuses on getting the entire picture in frame*/
+    background-position: center; /* Crops the top rather than the bottom if the picture is too big*/
+    
+}
+.contact {
+  --bg-color: #FF8400;
+}
+.news {
+  --bg-color: #aac3fb; /*Har trouble picking bolor, so set :root to this color */
+}
+.layout-box {
+  background-color: var(--bg-color);
+}
+
+/* The Shader Stuff */
+.shader {
+  position: relative;
+  overflow: hidden;
+  backface-visibility: hidden; /* Forces GPU */
+  height: 300px;
+  width: max-content;
+
+}
+
+.shader-layer {
+  background: black;
+  mix-blend-mode: multiply;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* background-size: 100%; */
+  background-position: center;
+}
+
+.specular {
+  mix-blend-mode: color-dodge;
+  background-attachment: fixed;
+}
+
+.mask {
+  mix-blend-mode: multiply;
+  /* background-image: url(sparrow_mask.png); */
+}
+
+/* Gradient Definitions */
+.gradient-sparrow {
+  background-image: linear-gradient(
+    0deg,
+    hsl(359, 60%, 40%),
+    hsl(16, 60%, 45%),
+    hsl(33, 60%, 50%),
+    hsl(45, 60%, 55%),
+    hsl(58, 60%, 60%),
+    hsl(58, 60%, 65%),
+    hsl(58, 60%, 70%),
+    hsl(96, 60%, 65%),
+    hsl(146, 60%, 60%),
+    hsl(183, 60%, 55%),
+    hsl(225, 60%, 50%),
+    hsl(265, 60%, 45%),
+    hsl(303, 60%, 40%)
+  );
+}
+
+.gradient-beetle {
+  background-image: linear-gradient(
+    0deg,
+    hsl(0, 0%, 0%) 10%,
+    hsl(67, 61%, 83%) 45%,
+    hsl(0, 0%, 0%) 80%
+  );
+}
+
+.gradient-webkom {
+  background-image: linear-gradient(
+    0deg,
+    blue 30%, 
+    #fcf900 50%,
+    #fcf900 100%
+  );
+} 
+
+/* HTML:
+<div class="image-3">
+      <div class="shader" style="object-fit: contain;"> <!-- Was "shader" -->
+        <img src="/Bilder/Webkom_logo_svart.png" alt="Webkomiteens logo" style="transform: scale(50%, 50%);">
+        <div class="shader-layer specular gradient-webkom">
+            <img class="shader-layer mask" src="Bilder/Webkom_logo_Gul.png" alt="">
+        </div>
+    </div>
+</div>
+
+*/
+
+/* Nyheter-knapp */
+.button-33 {
+    background-color: red;
+    border-radius: 100px;
+    box-shadow: rgba(255,90,0,0.35) 0 -25px 18px -14px inset, rgba(255,90,0,0.25) 0 1px 2px, rgba(255,90,0,0.18) 0 2px 4px, rgba(255,90,0,0.14) 0 4px 8px, rgba(255,90,0,0.10) 0 8px 16px, rgba(255,90,0,0.08) 0 16px 32px;
+    color: whitesmoke ;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 250ms;
+    border: 0;
+    font-size: 16px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button-33:hover {
+    box-shadow: rgba(255,90,0,0.35) 0 -25px 18px -14px inset, rgba(255,90,0,0.25) 0 1px 2px, rgba(255,90,0,0.18) 0 2px 4px, rgba(255,90,0,0.14) 0 4px 8px, rgba(255,90,0,0.10) 0 8px 16px, rgba(255,90,0,0.08) 0 16px 32px;
+    transform: scale(1.05) rotate(-1deg);
+}
