@@ -15,7 +15,14 @@
     gtag('config', 'G-PNJ5XKVFTR');
     </script>
     <style>
-      .music-player {
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at center, #2b2bff 0%, #1b1b40 100%);
+      color: white;
+      padding: 40px 20px;
+    }
+    .music-player {
         margin-top: 100px;
         bottom: 0;
         left: 25%;
@@ -31,10 +38,27 @@
         border-bottom: 1px solid #ccc;
     }
 
+    .RemoveFromQueue {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border-radius: 20px;
+        width: fit-content;
+        position: relative;
+        box-shadow: 0 0 15px rgba(220, 20, 60, 0.4); 
+        background: linear-gradient(to bottom right, #dc143c, #ff6b8b);
+        color: black;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
     .PlayThisSongButton {
         cursor: pointer;
         padding: 6px 12px;
+        margin-left: 5px;     
     }
+
     .progress-container {
         width: 100%;
         max-width: 500px;
@@ -65,6 +89,92 @@
       margin-bottom: 50px;
     }
 
+    
+    .playbutton {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      border-radius: 20px;
+      width: min-content;
+      position: relative;
+      box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+      background: linear-gradient(to bottom right, #cd7f32, #ffe4b5);
+      color: black;
+      font-weight: bold;
+    }
+
+    .playnext {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border-radius: 20px;
+        width: fit-content;
+        position: relative;
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.4); 
+        background: linear-gradient(to bottom right, #8a2be2, #e6e6fa);
+        color: black;
+        font-weight: bold;
+    }
+
+    .SangRad.playing {
+      color: black; /* black tekst*/
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(to bottom right, gold, #fff8dc);
+    }
+
+    .songInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .play_or_next {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .line {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .antallAvspillinger {
+        font-size: 12px;
+        color: #999;
+        font-weight: normal;
+    }
+
+    /* Spillekø */
+    #QueueList {
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border-radius: 12px;
+    }
+
+    #SongQueue li {
+        padding: 10px;
+        margin: 6px 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        display: flex;
+        flex-direction: row;
+
+    }
+
+    .song-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .queue-button {
+        cursor: pointer;
+        padding: 8px 12px;
+    }
     </style>
 </head>
 <body>
@@ -73,8 +183,16 @@
     <p>Om du trykker på "spill" mens en sang spilles, kan koden bli kvelt. Bare trykk spill på nytt.</p>
     <p>Hint: Du kan dra slideren</p>
     <p>Noen Sanger starter med stillhet / litt tidlig - dette skal fikses</p>
-    <div id="Sangutvalg"></div>
+    <p>Det er DINE avspillinger som displayes på hver UNIKE enhet</p>
+    <div id="Sangutvalg" style="width: fit-content;"></div> <!-- Ikke gjør den lengre enn den ternger å være -->
     <hr style="height: 3px; background-color: black;"> <!--En horisontal linje-->
+  </div>
+  <div class="Queuelist">
+    <h3>Sangkø (if tom === "random")</h3>
+    <ol id="SongQueue"></ol> <!-- en indeksert liste -->
+    <button id="ClearQueue" type="button">
+        Tøm kø
+    </button>
   </div>
   <div class="music-player">
     <audio id="myAudio"> <!-- Add progressbar so user can skip/go bak-->
@@ -111,234 +229,433 @@
     >
   </div>
    
+<script>
+    let startTime = Date.now();
+</script>
+<script>
+    /*
+    TODO
 
-    <script>
-        let startTime = Date.now();
-    </script>
-    <script>
-      /*LES HER --- Alt angående selve spillet yatzy, som reset-button er under script.js, google gtag om reset-button er under*/
-      const audio = document.getElementById("myAudio");
-      const audioSource = document.getElementById("audioSource");
+    1. Lage en dropdown meny for de ulike årene 
+    2. Laste opp alle sangene
+    3. Lage et køsystem (kanskje ha max 5 i køen samtidig?)
+    4. Legg til sangtekstene
 
-      const playlist = [
-          "/Audio/CGP_Sanger/3-klasse-CGP-2026.mp3",
-          "/Audio/CGP_Sanger/AC-Style.mp3",
-          "/Audio/CGP_Sanger/DALJEKÅT.mp3",
-          "/Audio/CGP_Sanger/De-Gamle_En-gang-til_CGP2023.mp3",
-          "/Audio/CGP_Sanger/Hebraisk_kokevise_CGP2023.mp3",
-          "/Audio/CGP_Sanger/Laboratoddy_CGP2026.mp3",
-          "/Audio/CGP_Sanger/Nanjing-House.mp3",
-          "/Audio/CGP_Sanger/Operon-Glow.mp3",
-          "/Audio/CGP_Sanger/Pølse i Lompe - Team KJEMPEGRILL.mp3",
-          "/Audio/CGP_Sanger/Styret.mp3",
-          "/Audio/CGP_Sanger/Bakgaardspojkarna-Alle_i_hopa_2000.mp3",
-          "/Audio/CGP_Sanger/The Notorious B.I.G. O-Notation - Nabla.mp3"
-          ];
+    
+    
+    */
+    const audio = document.getElementById("myAudio");
+    const audioSource = document.getElementById("audioSource");
 
-      const songNames = [
-        "Woo-hoo - Klasse 28 (2026)",
-        "AC Style - AC  (2026)",
-        "DALJEKÅT - (2018)",
-        "En gang til - De gamle (2023)",
-        "Hebraisk Kokevise - Klasse 26 (2023)",
-        "Laboratoddy (2026)",
-        "Nanjing House - De gamle (2026)",
-        "GFP - Operon (2026)",
-        "Pølse i Lompe - Team KJEMPEGRILL (2025)",
-        "MVA - Styret V26",
-        "Alle i Hopa (2000)",
-        "The Notorious B.I.G. O-Notation - Nabla 2026"
-      ]
+    const avspillinger = [];
+    
 
-      function displaySongs(div_ID) {
-            const utvalg = document.getElementById(div_ID);
+    function lagreAvspillinger(sang) {
+        /*
+        Hver gang det trykkes "spill" vil denne får +1 avspillinger | ikke superbra men veldig enkelt
+        */
+        const dataKey = "Avspillinger_for_CGP_sanger";
 
-            if (!utvalg) {
-                console.error("Klarte ikke å hente sangutvalg");
-                return;
-            }
+        // Hent eksisterende data, eller start med en tom liste
+        let avspillinger = JSON.parse(
+            localStorage.getItem(dataKey) || "[]"
+        );
 
-            // Kontroller at hver sang har en tilhørende lydfil
-            if (playlist.length !== songNames.length) {
-                console.error("Ulik lengde på playlist og songNames");
-                return;
-            }
+        // Finn sangen i listen
+        const eksisterendeSang = avspillinger.find(
+            entry => entry.sang === sang
+        );
 
-            // Tøm listen før den bygges opp på nytt
-            utvalg.innerHTML = "";
-
-            songNames.forEach((song, index) => {
-                // Opprett en rad for sangen
-                const row = document.createElement("div");
-                row.className = "SangRad";
-
-                // Opprett sangnavnet
-                const title = document.createElement("span");
-                title.className = "line";
-                title.textContent = song;
-
-                // Opprett avspillingsknappen
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "PlayThisSongButton";
-                button.textContent = "Spill";
-                button.title = `Spill ${song}`;
-                button.addEventListener("click", () => {
-                    playThis(index);
-                });
-
-                // Sett sammen raden
-                row.appendChild(title);
-                row.appendChild(button);
-
-                // Legg raden til på nettsiden
-                utvalg.appendChild(row);
+        if (eksisterendeSang) {
+            // legg til +1 avspilling
+            eksisterendeSang.tall += 1;
+        } else {
+            // Ny sang: opprett oppføring
+            avspillinger.push({
+                sang: sang,
+                tall: 1
             });
         }
-      displaySongs("Sangutvalg");
 
-      let currentSong = Math.floor(Math.random() * playlist.length); //Starter med en random sang, med mindre du velger. Se også kommentaren til windows.onload funksjonen.
+        // Lagre oppdatert liste
+        localStorage.setItem(dataKey, JSON.stringify(avspillinger));
+        oppdaterAvspillinger(sang); //oppdaterer de live, fordi playThis() kaller på lagreAvspillinger, som igjen kaller på oppdaterAvspillinger()
+    }
 
-      async function playCurrentSong() {
-          audioSource.src = playlist[currentSong];
-          audio.load();
+    function getAvspillinger(sang) { //nesten en kopi av lagreAvspillinger(), denne bare henter tallet for avspillinger for å vise i html
+        const dataKey = "Avspillinger_for_CGP_sanger";
 
-          try {
-              await audio.play();
-          } catch (error) {
-              if (error.name !== "AbortError") {
-                  console.error("Kunne ikke spille av sangen:", error);
-              }
-          }
-      }
+        // Hent eksisterende data, eller start med en tom liste
+        let avspillinger = JSON.parse(
+            localStorage.getItem(dataKey) || "[]"
+        );
 
-      function playAudio() {
-      if (audio.paused) {
-          audio.play();
-      }
-      }
+        // Finn sangen i listen
+        const eksisterendeSang = avspillinger.find(
+            entry => entry.sang === sang
+        );
 
-      function pauseAudio() {
-          audio.pause();
-      }
+        if (eksisterendeSang) {
+            return eksisterendeSang.tall;
+        } else {
+            console.error("Klarte ikke å hante avspillinger for sang:", sang);
+            return 0;
+        }
+    }
 
-      function updateStatus() {
-          console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
-          if (audio.paused) {
-              document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
-          } else {
-              document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
-              console.log("Playing song: " + playlist[currentSong]);
-          }
-      }
+    function oppdaterAvspillinger(song) { //oppdaterer de live
+        document.querySelectorAll(".antallAvspillinger")
+            .forEach(element => {
+                if (element.dataset.song === song) {
+                    element.textContent =
+                        `${getAvspillinger(song)} avspillinger`;
+                }
+            });
+    }
 
-      // Spill neste sang automatisk
-      audio.onended = function () {
-          currentSong = (currentSong + 1) % playlist.length; // looper tilbake
-          console.log("Prøver å spille neste sang")
-          playThis(currentSong)
-          //playCurrentSong();
-      };
 
-        // Toggle play/pause for the audio element when the image is clicked
-      function togglePlay() {
-          // Hvis audio er på, så pause
-          if (audio.paused) {
-              playAudio();
-              document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
-          } else { // Hvis audio er av, så spill
-              pauseAudio();
-              document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
-          }
-      }
+    const playlist = [
+        "/Audio/CGP_Sanger/3-klasse-CGP-2026.mp3",
+        "/Audio/CGP_Sanger/AC-Style.mp3",
+        "/Audio/CGP_Sanger/DALJEKÅT.mp3",
+        "/Audio/CGP_Sanger/De-Gamle_En-gang-til_CGP2023.mp3",
+        "/Audio/CGP_Sanger/Hebraisk_kokevise_CGP2023.mp3",
+        "/Audio/CGP_Sanger/Laboratoddy_CGP2026.mp3",
+        "/Audio/CGP_Sanger/Nanjing-House.mp3",
+        "/Audio/CGP_Sanger/Operon-Glow.mp3",
+        "/Audio/CGP_Sanger/Pølse i Lompe - Team KJEMPEGRILL.mp3",
+        "/Audio/CGP_Sanger/Styret.mp3",
+        "/Audio/CGP_Sanger/Bakgaardspojkarna-Alle_i_hopa_2000.mp3",
+        "/Audio/CGP_Sanger/The Notorious B.I.G. O-Notation - Nabla.mp3",
+        "/Audio/CGP_Sanger/Bernoulli & Baddies - Nabla.mp3",
+        ];
 
-      // Bytt til neste sang når knappen klikkes
-      function nextSong() {
-          currentSong = (currentSong + 1) % playlist.length; // looper tilbake
-          playThis(currentSong);
-          document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
-      }
+    const songNames = [
+    "Woo-hoo - Klasse 28 (2026)",
+    "AC Style - AC  (2026)",
+    "DALJEKÅT - (2018)",
+    "En gang til - De gamle (2023)",
+    "Hebraisk Kokevise - Klasse 26 (2023)",
+    "Laboratoddy (2026)",
+    "Nanjing House - De gamle (2026)",
+    "GFP - Operon (2026)",
+    "Pølse i Lompe - Team KJEMPEGRILL (2025)",
+    "MVA - Styret V26",
+    "Alle i Hopa (2000)",
+    "The Notorious B.I.G. O-Notation - Nabla 2026",
+    "Bernoulli & Badies - Nabla 2025",
+    ]
 
-      function playThis(song) {
+    function displaySongs(div_ID) {
+        const utvalg = document.getElementById(div_ID);
+
+        if (!utvalg) {
+            console.error("Klarte ikke å hente sangutvalg");
+            return;
+        }
+
+        // Kontroller at hver sang har en tilhørende lydfil
+        if (playlist.length !== songNames.length) {
+            console.error("Ulik lengde på playlist og songNames");
+            return;
+        }
+
+        // Tøm listen før den bygges opp på nytt
+        utvalg.innerHTML = "";
+
+        songNames.forEach((song, index) => {
+            // Opprett en rad for sangen
+            const row = document.createElement("div");
+            row.className = "SangRad";
+            row.dataset.song = index; 
+
+            // Opprett sangnavnet
+            const title = document.createElement("span");
+            title.className = "line";
+            title.textContent = song;
+
+            // Tekst for antall avspillinger       
+            const avspillinger = document.createElement("span");
+            avspillinger.className = "antallAvspillinger";
+            avspillinger.dataset.song = song;
+            avspillinger.textContent = `${getAvspillinger(song)} avspillinger`;
+
+            // Opprett avspillingsknappen
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "PlayThisSongButton";
+            button.classList.add("playbutton");
+            button.textContent = "Spill";
+            button.title = `Spill ${song}`;
+            button.addEventListener("click", () => {
+                playThis(index);
+            });
+
+            // "Legg til i kø knapp"
+            const playnext = document.createElement("button");
+            playnext.type = "button";
+            playnext.className = "PlayThisSongButton";
+            playnext.classList.add("playnext");
+            playnext.textContent = "Legg til i Kø";
+            playnext.addEventListener("click", () => {
+                addToQueue(index); 
+            });
+
+
+            // Sett sammen raden
+            const songInfo = document.createElement("div");
+            songInfo.className = "songInfo";
+            songInfo.append(title, avspillinger);
+
+            const songButtons = document.createElement("div");
+            songButtons.className = "play_or_next";
+            songButtons.append(button, playnext);
+
+            row.appendChild(songInfo);
+            row.appendChild(songButtons);
+
+            // Legg raden
+            utvalg.appendChild(row);
+        });
+    }
+    displaySongs("Sangutvalg");
+
+    function setPlayingRow(songIndex) {
+        document.querySelectorAll(".SangRad").forEach(row => {
+            row.classList.remove("playing");
+
+            // Finn raden som tilhører sangindeksen
+            if (Number(row.dataset.song) === songIndex) {
+                row.classList.add("playing");
+            }
+        });
+    }
+
+    let currentSong = Math.floor(Math.random() * playlist.length); //Starter med en random sang, med mindre du velger. Se også kommentaren til windows.onload funksjonen.
+
+    async function playCurrentSong() {
+        audioSource.src = playlist[currentSong];
+        audio.load();
+
+        const song = songNames[currentSong];
+
+        // Registrer avspillingen
+        lagreAvspillinger(song);
+
+        // Oppdater navnet på sangen som spilles
+        const SangNavn = document.getElementById("SongName");
+
+        if (!SangNavn) {
+            console.error("Klarte ikke å vise SangNavn");
+        } else {
+            SangNavn.innerText = song;
+        }
+
+        // Start avspillingen
+        try {
+            await audio.play();
+        } catch (error) {
+            if (error.name !== "AbortError") {
+                console.error("Kunne ikke spille av sangen:", error);
+            }
+        }
+    }
+
+    function playAudio() {
+        if (audio.paused) {
+            audio.play();
+        }
+    }
+
+    function pauseAudio() {
+        audio.pause();
+    }
+
+    function updateStatus() {
+        console.log("Audio status updated: " + (audio.paused ? "paused" : "playing"));
+        if (audio.paused) {
+            document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+        } else {
+            document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+            console.log("Playing song: " + playlist[currentSong]);
+        }
+    }
+
+    // Spill neste sang automatisk
+    audio.onended = function () {
+        if (playNextQueuedSong()) {
+            return;
+        }
+
+        // Ingen sanger i køen:
+        // Fortsett den vanlige spillelisten.
+        nextSong();
+    };
+
+    // Toggle play/pause for the audio element when the image is clicked
+    function togglePlay() {
+        // Hvis audio er på, så pause
+        if (audio.paused) {
+            playAudio();
+            document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+        } else { // Hvis audio er av, så spill
+            pauseAudio();
+            document.getElementById("toggleplayButton").src = "/Bilder/NoSound.svg"; // Set pause button icon
+        }
+    }
+
+    // Bytt til neste sang når knappen klikkes
+    function nextSong() {
+        //currentSong = (currentSong + 1) % playlist.length; // looper tilbake
+        currentSong = Math.floor(Math.random() * playlist.length);
+        setPlayingRow(currentSong);
+        playCurrentSong();
+        document.getElementById("toggleplayButton").src = "/Bilder/PlayingSong.svg"; // Set play button icon
+    }
+
+    function playThis(song) {
         if (song < 0 || song >= playlist.length) {
             console.error("Ugyldig sangindeks:", song);
             return;
         }
+        //lagreAvspillinger(songNames[song]); // +1 avspilling  //blir gjort i playcurrentsong for at den skal også funke for sanger i køen
         currentSong = song;
-        playCurrentSong();
+        setPlayingRow(song);
+        playCurrentSong();    
+    }
 
-        //Legg til sangnavn: "Spiller av X" 
-        const SangNavn = document.getElementById("SongName");
-        if (!SangNavn) {
-            console.error("klarte ikke å vise SangNavn");
+    audio.onplay = updateStatus;
+    audio.onpause = updateStatus;
+    // Auto-start musikk ved lasting av siden
+    /*window.onload = function () {
+        playCurrentSong();
+    };*/ //google elns har oppdatert sin "sikkerhet" som gjør at musikk ikke kan spilles av automatisk
+
+    //Spillekø
+    let songQueue = [];
+
+    function addToQueue(songIndex) { //Jobber med indexen siden der er sånn playcurrentsong funker
+        /*
+        Pass på funksjonalitet med audio.onended - den må sjekke om Queue er tom
+        */
+        if (
+            !Number.isInteger(songIndex) ||
+            songIndex < 0 ||
+            songIndex >= playlist.length
+        ) {
+            console.error("Ugyldig sangindeks:", songIndex);
             return;
         }
-        SangNavn.innerText = songNames[song];
-      }
 
-      audio.onplay = updateStatus;
-      audio.onpause = updateStatus;
-      // Auto-start musikk ved lasting av siden
-      /*window.onload = function () {
-          playCurrentSong();
-      };*/ //google elns har oppdatert sin "sikkerhet" som gjør at musikk ikke kan spilles av automatisk
+        songQueue.push(songIndex);
+        renderQueue();
+    }
 
+    function renderQueue() { //eneste gjør er å displaye køen
+        const queueElement = document.getElementById("SongQueue");
+        queueElement.replaceChildren();
+        if (songQueue.length === 0) {
+            const emptyMessage = document.createElement("li");
+            emptyMessage.textContent = "Køen er tom... velger en tilfeldig sang";
+            queueElement.appendChild(emptyMessage);
+            return;
+        }
+        
+        songQueue.forEach((songIndex, queueIndex) => { //disse må få sin egen styling for at folk skal skjønne at de er LAGT TIL i KØEN
+            const item = document.createElement("li");
+            const name = document.createElement("span");
+            const removeButton = document.createElement("button");
 
+            name.textContent =
+                `${queueIndex + 1}. ${songNames[songIndex]}`;
 
-      //PROGRESJONSBAR laget av AI
-      const progressBar = document.getElementById("progressBar");
-      const currentTimeDisplay = document.getElementById("currentTime");
-      const durationDisplay = document.getElementById("duration");
+            removeButton.textContent = "Fjern";
+            removeButton.type = "button";
+            removeButton.className = "RemoveFromQueue"
+            removeButton.addEventListener("click", () => {
+                songQueue.splice(queueIndex, 1);
+                renderQueue();
+            });
 
-      // Gjør sekunder om til formatet minutter:sekunder
-      function formatTime(seconds) {
-          if (!Number.isFinite(seconds) || seconds < 0) {
-              return "0:00";
-          }
-
-          const minutes = Math.floor(seconds / 60);
-          const remainingSeconds = Math.floor(seconds % 60);
-
-          return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
-      }
-
-      // Oppdater tidsvisningen når sangens metadata er lastet
-      audio.addEventListener("loadedmetadata", () => {
-          durationDisplay.textContent = formatTime(audio.duration);
-      });
-
-      // Oppdater progresjonsbaren mens sangen spiller
-      audio.addEventListener("timeupdate", () => {
-          if (Number.isFinite(audio.duration) && audio.duration > 0) {
-              progressBar.value = (audio.currentTime / audio.duration) * 1000;
-              currentTimeDisplay.textContent = formatTime(audio.currentTime);
-              durationDisplay.textContent = formatTime(audio.duration);
-          }
-      });
-
-      // La brukeren hoppe til et annet tidspunkt
-      progressBar.addEventListener("input", () => {
-          if (Number.isFinite(audio.duration) && audio.duration > 0) {
-              const percentage = Number(progressBar.value) / 1000;
-              audio.currentTime = percentage * audio.duration;
-
-              currentTimeDisplay.textContent = formatTime(audio.currentTime);
-          }
-      });
-    </script>
-
-    <script>
-        window.addEventListener("beforeunload", () => {
-        let endTime = Date.now();
-        let durationInSeconds = Math.round((endTime - startTime) / 1000);
-
-        gtag('event', 'time_on_page', {
-            'event_category': 'engagement',
-            'event_label': 'CGP',
-            'value': durationInSeconds
+            item.append(name, " ", removeButton);
+            queueElement.appendChild(item);
         });
-        });
-  
-    </script>
+    }
+
+    function playNextQueuedSong() {
+        if (songQueue.length === 0) {
+            return false;
+        }
+
+        currentSong = songQueue.shift();
+        renderQueue();
+
+
+        setPlayingRow(currentSong);
+        playCurrentSong();
+
+        return true;
+    }
+
+    document.getElementById("ClearQueue").addEventListener("click", () => {
+        songQueue = [];
+        renderQueue();
+    });
+
+    //PROGRESJONSBAR laget av AI
+    const progressBar = document.getElementById("progressBar");
+    const currentTimeDisplay = document.getElementById("currentTime");
+    const durationDisplay = document.getElementById("duration");
+
+    // Gjør sekunder om til formatet minutter:sekunder
+    function formatTime(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) {
+            return "0:00";
+        }
+
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+
+        return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+    }
+
+    // Oppdater tidsvisningen når sangens metadata er lastet
+    audio.addEventListener("loadedmetadata", () => {
+        durationDisplay.textContent = formatTime(audio.duration);
+    });
+
+    // Oppdater progresjonsbaren mens sangen spiller
+    audio.addEventListener("timeupdate", () => {
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+            progressBar.value = (audio.currentTime / audio.duration) * 1000;
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            durationDisplay.textContent = formatTime(audio.duration);
+        }
+    });
+
+    // La brukeren hoppe til et annet tidspunkt
+    progressBar.addEventListener("input", () => {
+        if (Number.isFinite(audio.duration) && audio.duration > 0) {
+            const percentage = Number(progressBar.value) / 1000;
+            audio.currentTime = percentage * audio.duration;
+
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        }
+    });
+</script>
+
+<script>
+    window.addEventListener("beforeunload", () => {
+    let endTime = Date.now();
+    let durationInSeconds = Math.round((endTime - startTime) / 1000);
+
+    gtag('event', 'time_on_page', {
+        'event_category': 'engagement',
+        'event_label': 'CGP',
+        'value': durationInSeconds
+    });
+    });
+</script>
 </body>
 </html>
+,
