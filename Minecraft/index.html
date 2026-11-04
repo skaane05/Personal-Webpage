@@ -1,0 +1,56 @@
+<h2>Minecraft-server</h2>
+
+<p>Status: <span id="status">Laster...</span></p>
+<p>Spillere: <span id="playerCount">-</span></p>
+
+<h3>Spillere online</h3>
+<ul id="players"></ul>
+
+<script>
+const SERVER_IP = "andska05.aternos.me";
+
+
+async function getMinecraftStatus() {
+    try {
+        const response = await fetch(
+            `https://api.mcsrvstat.us/3/${SERVER_IP}`
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const status = document.querySelector("#status");
+        const count = document.querySelector("#playerCount");
+        const players = document.querySelector("#players");
+
+        if (!data.online) {
+            status.textContent = "Offline";
+            count.textContent = "0";
+            players.replaceChildren();
+            return;
+        }
+
+        status.textContent = "Online";
+        count.textContent =
+            `${data.players.online}/${data.players.max}`;
+
+        players.replaceChildren();
+
+        (data.players.list || []).forEach(player => {
+            const li = document.createElement("li");
+            li.textContent = player.name;
+            players.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error("Minecraft API-feil:", error);
+        document.querySelector("#status").textContent = "Feil";
+    }
+}
+
+getMinecraftStatus();
+setInterval(getMinecraftStatus, 10000);
+</script>
